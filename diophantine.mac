@@ -1,0 +1,123 @@
+/* based on dario alpern's solution, see https://www.alpertron.com.ar/QUAD.HTM */
+
+dio_error_2_vars:"Can only solve equations in 2 unknowns, found";
+dio_error_integer_coeffs:"All coefficients should be integers";
+dio_error_hi_pow:"Can only solve equations of degree 2 or less";
+dio_error_no_unknowns:"No unknowns to solve for";
+dio_error_not_implemented:"Can't solve this type of diophantine equation (yet?)";
+
+/* a*x^2 + b*x*y + c*y^2 + d*x + e*y + f */
+
+load(to_poly_solve);
+
+dio_gensym():='%n;
+
+dio_gen_euclid(d,e):=block([v:[0,1,e],u:[1,0,d],t:0,q:0],
+  for t:0 while v[3] # 0 do block([],
+    q:floor(u[3]/v[3]),
+    t:u-q*v,
+    u:v,
+    v:t),
+  [u,v]);
+
+dio_solve_linear(x,y,d,e,f):=block(
+  if (d = 0 and e # 0) then
+    block(if (integerp(f/e)) then [[vars[2]=-f/e]])
+  elseif (d # 0 and e = 0) then
+    block(if (integerp(f/d)) then [[vars[1]=-f/d]])
+  else block([g:gcd(d,e)],
+    if (mod(f,g) # 0) then
+      []
+    else
+    block([uv:dio_gen_euclid(d,e),n:dio_gensym()],
+      block([xi:-uv[1][1]*f/uv[1][3], xl:e,
+             yi:-uv[1][2]*f/uv[1][3], yl:-d, tx:0],
+        uv[2][1]:d*d+e*e,
+        tx:floor(((d*yi-e*xi)+uv[2][1]/2)/uv[2][1]),
+        xi:xi+e*tx,
+        yi:yi-d*tx,
+        if (xl<0 and yl<0) then block(xl:-xl,yl:-yl),
+        [[vars[1]=xi+n*xl,vars[2]=yi+n*yl]]))));
+
+dio_solve_simple_hyperbolic(x, y, b, d, e, f):=block(
+  if (d*e-b*f=0) then block(
+    if integerp(e/b) then [[x = -e/b, y = dio_gensym()]]
+    elseif integerp(d/b) then [[x = dio_gensym(), y = -d/b]]
+    else [])
+  else block([di,result:[]],
+    for di in listify(divisors(d*e-b*f)) do block([tx,ty],
+      tx:(di-e)/b,
+      ty:((d*e-b*f)/di-d)/b,
+      if integerp(tx) and integerp(ty) then result:cons([x=tx,y=ty],result),
+      tx:(-di-e)/b,
+      ty:((-d*e+b*f)/di-d)/b,
+      if integerp(tx) and integerp(ty) then result:cons([x=tx,y=ty],result)),
+    reverse(result)));
+
+dio_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*c)*x^2+2*(b*e-2*c*d)*x+(e^2-4*c*f),x), iroots],
+  if length(roots) < 2 then return([]),
+  iroots:map(rhs,roots),
+  if not (isreal_p(iroots[1]) and isreal_p(iroots[2])) then return([]),
+  iroots:map(truncate,iroots),
+  if iroots[1] > iroots[2] then iroots:[iroots[2],iroots[1]],
+  block([result:[],tx],
+    for tx:iroots[1] thru iroots[2] do
+    block([ty1:(-(b*tx+e)+sqrt((b*tx+e)^2-4*c*(a*tx^2+d*tx+f)))/(2*c),
+           ty2:(-(b*tx+e)-sqrt((b*tx+e)^2-4*c*(a*tx^2+d*tx+f)))/(2*c)],
+           if integerp(ty1) then result:cons([x=tx,y=ty1],result),
+           if integerp(ty2) then result:cons([x=tx,y=ty2],result)),
+         reverse(result)));
+
+dio_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qcdqae],
+  ag:abs(a/g),
+  bg:b/g,
+  cg:abs(c/g),
+  qa:sqrt(ag),
+  qc:sqrt(cg)*signum(b/a),
+  qcdqae:qc*d-qa*e,
+  if qcdqae = 0 then block([u,usols],
+    usols:solve(qa*g*u^2+d*u+qa*f,u),
+    [dio_solve_linear(x, y, qa, qc, -rhs(usols[1]))[1], dio_solve_linear(x, y, qa, qc, -rhs(usols[2]))[1]])
+  else block([un:abs(qcdqae),u,result:[]],
+    for u:0 thru un do block(
+      if mod(qa*g*u^2+d*u+qa*f,qc*d-qa*e) = 0 then
+        result:cons([x=qc*g*(qa*e-qc*d)*dio_gensym()^2-(e+2*qc*g*u)*dio_gensym()-(qc*g*u^2+e*u+qc*f)/qcdqae,
+                     y=qa*g*qcdqae*dio_gensym()^2+(d+2*qa*g*u)*dio_gensym()+(qa*g*u^2+d*u+qa*f)/qcdqae],result)),
+      reverse(result)));
+
+
+dio_solve(dio_eq):=block([vars:listofvars(dio_eq)],
+  if length(vars) > 2 then error (dio_error_2_vars, vars)
+  elseif length(vars) = 1 then vars:[vars[1],gensym("unk")]
+  elseif length(vars) = 0 then error(dio_error_no_unknowns) else 1,
+  block([x:vars[1],y:vars[2]],
+    if (hipow(dio_eq, x)>2 or hipow(dio_eq, y)>2) then
+      error(dio_error_hi_pow)
+    else
+    block([a:coeff(dio_eq,x^2),
+      b:coeff(coeff(dio_eq,x),y),
+      c:coeff(dio_eq, y^2),
+      d:subst(y=0, coeff(dio_eq, x)),
+      e:subst(x=0,coeff(dio_eq,y)),
+      f:subst([x=0,y=0],dio_eq)],
+      map(":",['a,'b,'c,'d,'e,'f],rest(ezgcd(a,b,c,d,e,f))),
+      if not every(integerp, {a,b,c,d,e,f}) then
+        error (dio_error_integer_coeffs)
+      elseif (a = 0 and b = 0 and c = 0) then
+        dio_solve_linear(x, y, d, e, f)
+      elseif (a = 0 and c = 0 and b # 0) then
+        dio_solve_simple_hyperbolic(x, y, b, d, e, f)
+      elseif b^2-4*a*c < 0 then
+        dio_solve_elliptic(x, y, a, b, c, d, e, f)
+      elseif b^2-4*a*c = 0 then
+        dio_solve_parabolic(x, y, a, b, c, d, e, f)
+      else
+        error(dio_error_not_implemented))));
+
+dio_trace():=trace(dio_gen_euclid, dio_solve_linear, dio_solve_simple_hyperbolic, dio_solve_elliptic, dio_solve_parabolic, dio_solve);
+
+dio_rand(n):=random(n)-floor(n/2);
+
+dio_random_eq(n):=block([a,b,c,d,e,f],
+  map(":",[a,b,c,d,e,f],makelist(dio_rand(n),i,1,6)),
+  a*x^2+b*x*y+c*y^2+d*x+e*y+f);
