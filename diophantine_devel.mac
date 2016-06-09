@@ -1,0 +1,13 @@
+dio_trace():=trace(dio_gen_euclid, dio_solve_linear, dio_solve_simple_hyperbolic, dio_solve_elliptic, dio_solve_parabolic, dio_solve);
+
+dio_rand(n):=random(n)-floor(n/2);
+
+dio_random_eq(n):=block([a,b,c,d,e,f],
+  map(":",[a,b,c,d,e,f],makelist(dio_rand(n),i,1,6)),
+  a*x^2+b*x*y+c*y^2+d*x+e*y+f);
+
+eqs_with_solutions(eqns):=block([result:[],eq],
+  for eq in eqns do block(
+    if length(eq[2]) > 0 then
+    push(eq,result)),
+  reverse(result));
