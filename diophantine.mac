@@ -1,4 +1,10 @@
-/* based on dario alpern's solution, see https://www.alpertron.com.ar/QUAD.HTM */
+/*
+solves linear and quadratic diophantine equations with constant integer coefficients.
+based on dario alpern's solution, see https://www.alpertron.com.ar/QUAD.HTM
+usage:
+  load(diophantine);
+  dio_solve(3*x^2+2*y-3);
+*/
 
 dio_error_2_vars:"Can only solve equations in 2 unknowns, found";
 dio_error_integer_coeffs:"All coefficients should be integers";
