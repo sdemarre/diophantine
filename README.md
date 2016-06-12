@@ -32,3 +32,11 @@ Graphical example:
 	(%i8) dio_draw_example();
 
 ![Graphical example](dio_draw_example.png)
+
+	(%i9) dio_draw_example2();
+
+![Graphical example2](dio_draw_example2.png)
+
+	(%i10) dio_draw_example3();
+
+![Graphical example2](dio_draw_example3.png)

@@ -6,12 +6,18 @@ dio_make_points_data(dio_points_result):=block(
 dio_make_points_labels(dio_points_result, dx, dy):=block([point_list:dio_make_points_data(dio_points_result)],
   apply(label,map(lambda([p],[string(p), p[1]+dx, p[2]+dy]), point_list)));
 
-dio_draw_example():=block([eq:2*x*y+56*y+5*x+7=0, solutions, point_data, label_data],
+dio_draw_finite(eq, xmin, xmax, ymin, ymax, ldx, ldy):=block([solutions, point_data, label_data],
   solutions:dio_solve(eq),
   point_data:dio_make_points_data(solutions),
-  label_data:dio_make_points_labels(solutions, 10, 5),
-  draw2d(font="Helvetica", font_size=20, yrange=[-75,75],
-    explicit(rhs(solve(eq,y)[1]), x, -170,120),
+  label_data:dio_make_points_labels(solutions, ldx, ldy),
+  wxdraw2d(font="Helvetica", font_size=20, yrange=[ymin, ymax], title=string(eq), xaxis=true, yaxis=true, ip_grid=[200,200],ip_grid_in=[10,10],
+    implicit(eq, x, xmin, xmax, y, ymin, ymax),
     point_size=5, color=red, point_type=circle, points(point_data),
     point_size=2, color=green, point_type=filled_circle, points(point_data),
     color=black, label_data));
+
+dio_draw_example():=dio_draw_finite(2*x*y+56*y+5*x+7=0, -170, 120, -75, 75, 10, 5);
+
+dio_draw_example2():=dio_draw_finite(42*x*x+8*x*y+15*y*y+23*x+17*y-4915, -12, 12, -20, 20, 1, 2);
+
+dio_draw_example3():=dio_draw_finite((-2*y^2)-5*x*y+3*x^2-6, -4, 4, -4, 4, 1/2, 1/2);
