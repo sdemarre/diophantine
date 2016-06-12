@@ -19,12 +19,15 @@ Generating some specific values when the solution contains %n can be done like t
 	(%o4) [[x=2*%n+2,y=1-3*%n]]
 
 	(%i5) makelist(subst(%n=i,%o4[1]),i,-3,3);
-	(%o5) [[x = - 4, y = 10], [x = - 2, y = 7], [x = 0, y = 4], [x = 2, y = 1], [x = 4, y = - 2], [x = 6, y = - 5], [x = 8, y = - 8]]
+	(%o5) [[x = - 4, y = 10], [x = - 2, y = 7], [x = 0, y = 4], [x = 2, y = 1],
+	      	  [x = 4, y = - 2], [x = 6, y = - 5], [x = 8, y = - 8]]
 
 There is a file with tests available, run it like this:
+
 	(%i6) batch(rtest_diophantine);
 
 Graphical example:
+
 	(%i7) load(diophantine_draw)$
 	(%i8) dio_draw_example();
 
