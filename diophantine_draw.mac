@@ -1,0 +1,17 @@
+load(draw);
+
+dio_make_points_data(dio_points_result):=block(
+  map(lambda([p],[rhs(p[1]),rhs(p[2])]), dio_points_result));
+
+dio_make_points_labels(dio_points_result, dx, dy):=block([point_list:dio_make_points_data(dio_points_result)],
+  apply(label,map(lambda([p],[string(p), p[1]+dx, p[2]+dy]), point_list)));
+
+dio_draw_example():=block([eq:2*x*y+56*y+5*x+7=0, solutions, point_data, label_data],
+  solutions:dio_solve(eq),
+  point_data:dio_make_points_data(solutions),
+  label_data:dio_make_points_labels(solutions, 10, 5),
+  draw2d(font="Helvetica", font_size=20, yrange=[-75,75],
+    explicit(rhs(solve(eq,y)[1]), x, -170,120),
+    point_size=5, color=red, point_type=circle, points(point_data),
+    point_size=2, color=green, point_type=filled_circle, points(point_data),
+    color=black, label_data));

@@ -24,3 +24,8 @@ Generating some specific values when the solution contains %n can be done like t
 There is a file with tests available, run it like this:
 	(%i6) batch(rtest_diophantine);
 
+Graphical example:
+	(%i7) load(diophantine_draw)$
+	(%i8) dio_draw_example();
+
+![Graphical example](dio_draw_example.png)
