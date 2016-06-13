@@ -1,7 +1,12 @@
 Maxima program to solve diophantine equations of the form ax^2+bxy+cy^2+dx+ey+f=0 with a,b,c,d,e,f constant integers.
 Based on Dario Alpern's solution/code found at https://www.alpertron.com.ar/QUAD.HTM
 
-Usage:
+[Usage](README.md#usage)  
+[Limitations](README.md#limitations)  
+[Tests](README.md#tests)  
+[Graphical examples](README.md#graphical-examples)  
+
+## Usage:
 
 	(%i1) load(diophantine)$
 
@@ -22,11 +27,17 @@ Generating some specific values when the solution contains %n can be done like t
 	(%o5) [[x = - 4, y = 10], [x = - 2, y = 7], [x = 0, y = 4], [x = 2, y = 1],
 	      	  [x = 4, y = - 2], [x = 6, y = - 5], [x = 8, y = - 8]]
 
+## Limitations
+
+The hyperbolic case (b^2-4*a*c>0) is work in progress.
+
+## Tests
+
 There is a file with tests available, run it like this:
 
 	(%i6) batch(rtest_diophantine);
 
-Graphical example:
+## Graphical examples:
 
 	(%i7) load(diophantine_draw)$
 	(%i8) dio_draw_example();
