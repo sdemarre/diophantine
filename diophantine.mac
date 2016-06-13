@@ -115,7 +115,14 @@ dio_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   else
     working_on_it);
 
-dio_solve(dio_eq):=if op(dio_eq) = "=" then dio_solve(lhs(dio_eq)-rhs(dio_eq)) else
+dio_solve(dio_eq) := nested_sort(dio_solve1(dio_eq));
+
+nested_sort (l) :=
+  if listp(l)
+    then sort (map (lambda ([l1], if listp(l1) then sort(l1) else l1), l))
+    else l;
+
+dio_solve1(dio_eq):=if op(dio_eq) = "=" then dio_solve1(lhs(dio_eq)-rhs(dio_eq)) else
 block([vars:listofvars(dio_eq)],
   if length(vars) > 2 then error (dio_error_2_vars, vars)
   elseif length(vars) = 1 then return(dio_solve_single_var(dio_eq))
