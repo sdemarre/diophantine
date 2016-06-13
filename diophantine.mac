@@ -3,7 +3,7 @@ solves linear and quadratic diophantine equations with constant integer coeffici
 based on dario alpern's solution, see https://www.alpertron.com.ar/QUAD.HTM
 usage:
   load(diophantine);
-  dio_solve(3*x^2+2*y-3);
+  diophantine_solve(3*x^2+2*y-3);
 */
 
 dio_error_2_vars:"Can only solve equations in 2 unknowns, found";
@@ -18,7 +18,7 @@ load(to_poly_solve);
 
 dio_gensym():='%n;
 
-dio_solve_single_var(dio_eq):=block([sols:solve(dio_eq),result:[]],
+diophantine_solve_single_var(dio_eq):=block([sols:solve(dio_eq),result:[]],
   for sol in sols do if integerp(rhs(sol)) then push([sol],result),
   result);
 
@@ -30,7 +30,7 @@ dio_gen_euclid(d,e):=block([v:[0,1,e],u:[1,0,d],t:0,q:0],
     v:t),
   [u,v]);
 
-dio_solve_linear(x,y,d,e,f):=block(
+diophantine_solve_linear(x,y,d,e,f):=block(
   if (d = 0 and e # 0) then
     block(if (integerp(f/e)) then [[y=-f/e]])
   elseif (d # 0 and e = 0) then
@@ -54,7 +54,7 @@ dio_integer_expressions(xexpr, yexpr, vals):=block([_e, result:[]],
     push([sx, sy], result)),
   reverse(result));
 
-dio_solve_simple_hyperbolic(x, y, b, d, e, f):=block(
+diophantine_solve_simple_hyperbolic(x, y, b, d, e, f):=block(
   if (d*e-b*f=0) then block(
     if integerp(e/b) then [[x = -e/b, y = dio_gensym()]]
     elseif integerp(d/b) then [[x = dio_gensym(), y = -d/b]]
@@ -64,7 +64,7 @@ dio_solve_simple_hyperbolic(x, y, b, d, e, f):=block(
       dio_integer_expressions(x = (v-e)/b, y = ((d*e-b*f)/v-d)/b, [v, divs]),
       dio_integer_expressions(x = (-v-e)/b, y = ((-d*e+b*f)/v-d)/b, [v, divs]))));
 
-dio_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*c)*x^2+2*(b*e-2*c*d)*x+(e^2-4*c*f),x), iroots],
+diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*c)*x^2+2*(b*e-2*c*d)*x+(e^2-4*c*f),x), iroots],
   if length(roots) < 2 then return([]),
   iroots:map(rhs,roots),
   if not (isreal_p(iroots[1]) and isreal_p(iroots[2])) then return([]),
@@ -75,7 +75,7 @@ dio_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*c)*x^2+2
       dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]),
       dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]))));
 
-dio_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qcdqae],
+diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qcdqae],
   ag:abs(a/g),
   bg:b/g,
   cg:abs(c/g),
@@ -86,8 +86,8 @@ dio_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qc
   if qcdqae = 0 then block([u,usols],
     usols:solve(qa*g*u^2+d*u+qa*f,u),
     block([result:[],u1:-rhs(usols[1]),u2:-rhs(usols[2])],
-      if integerp(u1) then push(dio_solve_linear(x, y, qa, qc, u1)[1], result),
-      if integerp(u2) then push(dio_solve_linear(x, y, qa, qc, u2)[1], result),
+      if integerp(u1) then push(diophantine_solve_linear(x, y, qa, qc, u1)[1], result),
+      if integerp(u2) then push(diophantine_solve_linear(x, y, qa, qc, u2)[1], result),
       result))
   else block([un:abs(qcdqae),u,result:[]],
     for u:0 thru un do block(
@@ -97,11 +97,11 @@ dio_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qc
         push([x = xv, y = yv], result))),
           reverse(result)));
 
-dio_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([b2m4ac:b^2-4*a*c,isq],
+diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([b2m4ac:b^2-4*a*c,isq],
   isq:isqrt(b2m4ac),
   if isq^2 = b2m4ac then block(
     if (f = 0) then
-    append(dio_solve(2*a*x+ (b + isq)*y), dio_solve(2*a*x+(b - isq)*y))
+    append(diophantine_solve(2*a*x+ (b + isq)*y), diophantine_solve(2*a*x+(b - isq)*y))
     else block([divs:listify(divisors(-4*a*f))],
       dio_integer_expressions(x = (u-(b+isq)*(u+4*a*f/u)/2/isq)/2/a, y = (u + 4*a*f/u)/2/isq, [u, append(divs, -1*divs)])))
   elseif integerp(f/gcd(gcd(a,b),c)) then  block(
@@ -109,23 +109,23 @@ dio_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([b2m4ac:b^2-4*a*c,isq],
   else
   []);
 
-dio_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
+diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then
-    dio_solve_hyperbolic_homogenous(x, y, a, b, c, f)
+    diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f)
   else
     working_on_it);
 
-dio_solve(dio_eq) := nested_sort(dio_solve1(dio_eq));
+diophantine_solve(dio_eq) := nested_sort(diophantine_solve1(dio_eq));
 
 nested_sort (l) :=
   if listp(l)
     then sort (map (lambda ([l1], if listp(l1) then sort(l1) else l1), l))
     else l;
 
-dio_solve1(dio_eq):=if op(dio_eq) = "=" then dio_solve1(lhs(dio_eq)-rhs(dio_eq)) else
+diophantine_solve1(dio_eq):=if op(dio_eq) = "=" then diophantine_solve1(lhs(dio_eq)-rhs(dio_eq)) else
 block([vars:listofvars(dio_eq)],
   if length(vars) > 2 then error (dio_error_2_vars, vars)
-  elseif length(vars) = 1 then return(dio_solve_single_var(dio_eq))
+  elseif length(vars) = 1 then return(diophantine_solve_single_var(dio_eq))
   elseif length(vars) = 0 then error(dio_error_no_unknowns),
   block([x:vars[1],y:vars[2]],
     if (hipow(dio_eq, x)>2 or hipow(dio_eq, y)>2) then
@@ -141,12 +141,12 @@ block([vars:listofvars(dio_eq)],
       if not every(integerp, {a,b,c,d,e,f}) then
         error (dio_error_integer_coeffs)
       elseif (a = 0 and b = 0 and c = 0) then
-        dio_solve_linear(x, y, d, e, f)
+        diophantine_solve_linear(x, y, d, e, f)
       elseif (a = 0 and c = 0 and b # 0) then
-        dio_solve_simple_hyperbolic(x, y, b, d, e, f)
+        diophantine_solve_simple_hyperbolic(x, y, b, d, e, f)
       elseif b^2-4*a*c < 0 then
-        dio_solve_elliptic(x, y, a, b, c, d, e, f)
+        diophantine_solve_elliptic(x, y, a, b, c, d, e, f)
       elseif b^2-4*a*c = 0 then
-        dio_solve_parabolic(x, y, a, b, c, d, e, f)
+        diophantine_solve_parabolic(x, y, a, b, c, d, e, f)
       else
-        dio_solve_hyperbolic(x, y, a, b, c, d, e, f))));
+        diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f))));

@@ -1,49 +1,49 @@
 
 /* ******************** single variable */
 
-dio_solve(2*y+12);
+diophantine_solve(2*y+12);
 [[y=-6]]$
 
-dio_solve(3*p-12);
+diophantine_solve(3*p-12);
 [[p=4]]$
 
-dio_solve(19*r-32);
+diophantine_solve(19*r-32);
 []$
 
-dio_solve(expand((q-3)*(q+5)));
+diophantine_solve(expand((q-3)*(q+5)));
 [[q=-5],[q=3]]$
 
-dio_solve(7*x*x-4*x-3);
+diophantine_solve(7*x*x-4*x-3);
 [[x=1]]$
 
 
 /* ******************** linear*/
 
-dio_solve(-9*x+12*y);
+diophantine_solve(-9*x+12*y);
 [[x = 4*%n,y = 3*%n]]$
 
-dio_solve(5*x-15*y+7);
+diophantine_solve(5*x-15*y+7);
 []$
 
-dio_solve(10*r+84*s+16);
+diophantine_solve(10*r+84*s+16);
 [[r=42*%n-10,s=1-5*%n]]$
 
-dio_solve(3*x+2*y-8);
+diophantine_solve(3*x+2*y-8);
 [[x=2*%n+2,y=1-3*%n]]$
 
 
 /* ******************** simple hyperbolic */
 
-dio_solve(3*x*y+9*y+4*x+12);
+diophantine_solve(3*x*y+9*y+4*x+12);
 [[x = -3,y = %n]]$
 
-dio_solve(21*x*y+12*y+7*x+4);
+diophantine_solve(21*x*y+12*y+7*x+4);
 []$
 
-dio_solve(7*x*y+12*y+7*x+12);
+diophantine_solve(7*x*y+12*y+7*x+12);
 [[x = %n,y = -1]]$
 
-dio_solve(2*x*y+5*x+56*y+7);
+diophantine_solve(2*x*y+5*x+56*y+7);
 [[x = - 161, y = - 3], [x = - 47, y = - 6], [x = - 35, y = - 12], 
 [x = - 29, y = - 69], [x = - 27, y = 64], [x = - 21, y = 7], [x = - 9, y = 1], 
 [x = 105, y = - 2]];
@@ -51,31 +51,31 @@ dio_solve(2*x*y+5*x+56*y+7);
 
 /* ******************** elliptic */
 
-dio_solve(42*x*x+8*x*y+15*y*y+23*x+17*y-4915);
+diophantine_solve(42*x*x+8*x*y+15*y*y+23*x+17*y-4915);
 [[x = -11,y = -1]]$
 
 
 /* ******************** parabolic */
 
 
-dio_solve(9*y^2+12*x*y+3*y+4*x^2+2*x);
+diophantine_solve(9*y^2+12*x*y+3*y+4*x^2+2*x);
 [[x = 3*%n, y = - 2*%n], [x = 3*%n + 1, y = (- 2*%n) - 1]] $
 
-dio_solve(18*y^2-24*x*y+7*y+8*x^2+5*x+16);
+diophantine_solve(18*y^2-24*x*y+7*y+8*x^2+5*x+16);
 [[x = (-174*%n^2)+17*%n-2,y = (-116*%n^2)+21*%n-2], [x = (-174*%n^2)+41*%n-4,y = (-116*%n^2)+37*%n-4]]$
 
-dio_solve(9*y^2+12*x*y-2*y+4*x^2+4*x+3);
+diophantine_solve(9*y^2+12*x*y-2*y+4*x^2+4*x+3);
 []$
 
-dio_solve(5*y^2+10*x*y+16*y+5*x^2+16*x-7);
+diophantine_solve(5*y^2+10*x*y+16*y+5*x^2+16*x-7);
 []$
 
 /* ******************** hyperbolic */
-dio_solve(4*x^2-y^2-x+y+1);
+diophantine_solve(4*x^2-y^2-x+y+1);
 [[x=-1,y=-2],[x=-1,y=3]]$
 
-dio_solve((-2*y^2)-5*x*y+3*x^2);
+diophantine_solve((-2*y^2)-5*x*y+3*x^2);
 [[x = %n,y = -3*%n],[x = 2*%n,y = %n]]$
 
-dio_solve((-2*y^2)-5*x*y+3*x^2-6);
+diophantine_solve((-2*y^2)-5*x*y+3*x^2-6);
 [[x=-1,y=1],[x=1,y=-1]]$

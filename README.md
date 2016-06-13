@@ -10,17 +10,17 @@ Based on Dario Alpern's solution/code found at https://www.alpertron.com.ar/QUAD
 
 	(%i1) load(diophantine)$
 
-	(%i2) dio_solve(-9*x+11*y=5);
+	(%i2) diophantine_solve(-9*x+11*y=5);
 	(%o2) [[x = 11*%n - 3,y = 9*%n - 2]]
 
 The result is always a (possibly empty) list of values. When there are infinitely many solutions, the solution contains a %n, which means "any integer". Some equations have several sets of those, e.g.
 
-	(%i3) dio_solve(18*y^2-24*x*y+7*y+8*x^2+5*x+16);
+	(%i3) diophantine_solve(18*y^2-24*x*y+7*y+8*x^2+5*x+16);
 	(%o3) [[x = (-174*%n^2)+17*%n-2,y = (-116*%n^2)+21*%n-2], [x = (-174*%n^2)+41*%n-4,y = (-116*%n^2)+37*%n-4]]
 
 Generating some specific values when the solution contains %n can be done like this
 
-	(%i4) dio_solve(3*x+2*y-8);
+	(%i4) diophantine_solve(3*x+2*y-8);
 	(%o4) [[x=2*%n+2,y=1-3*%n]]
 
 	(%i5) makelist(subst(%n=i,%o4[1]),i,-3,3);

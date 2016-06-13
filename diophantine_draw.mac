@@ -7,7 +7,7 @@ dio_make_points_labels(dio_points_result, dx, dy):=block([point_list:dio_make_po
   apply(label,map(lambda([p],[string(p), p[1]+dx, p[2]+dy]), point_list)));
 
 dio_draw_finite(eq, xmin, xmax, ymin, ymax, ldx, ldy):=block([solutions, point_data, label_data],
-  solutions:dio_solve(eq),
+  solutions:diophantine_solve(eq),
   point_data:dio_make_points_data(solutions),
   label_data:dio_make_points_labels(solutions, ldx, ldy),
   wxdraw2d(font="Helvetica", font_size=20, yrange=[ymin, ymax], title=string(eq), xaxis=true, yaxis=true, ip_grid=[200,200],ip_grid_in=[10,10],

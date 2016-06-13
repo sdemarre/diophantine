@@ -1,11 +1,11 @@
 dio_trace():=trace(dio_gen_euclid,
-  dio_solve_linear,
-  dio_solve_simple_hyperbolic,
-  dio_solve_elliptic,
-  dio_solve_parabolic,
-  dio_solve_hyperbolic_homogenous,
-  dio_solve_hyperbolic,
-  dio_solve);
+  diophantine_solve_linear,
+  diophantine_solve_simple_hyperbolic,
+  diophantine_solve_elliptic,
+  diophantine_solve_parabolic,
+  diophantine_solve_hyperbolic_homogenous,
+  diophantine_solve_hyperbolic,
+  diophantine_solve);
 
 dio_rand(n):=random(n)-floor(n/2);
 
