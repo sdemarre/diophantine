@@ -46,8 +46,13 @@ There is a file with tests available, run it like this:
 
 	(%i9) dio_draw_example2();
 
-![Graphical example2](dio_draw_example2.png)
+![Graphical example 2](dio_draw_example2.png)
 
 	(%i10) dio_draw_example3();
 
-![Graphical example2](dio_draw_example3.png)
+![Graphical example 3](dio_draw_example3.png)
+
+	(%i11) dio_draw_example4();
+
+![Graphical example 4](dio_draw_example4.png)
+
