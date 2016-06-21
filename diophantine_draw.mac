@@ -32,8 +32,8 @@ dio_draw_infinite(eq, nmin, nmax, ldx, ldy):=block([solutions, point_data, label
 
 dio_draw_example():=dio_draw_finite(2*x*y+56*y+5*x+7=0, -170, 120, -75, 75, 10, 5);
 
-dio_draw_example2():=dio_draw_finite(42*x*x+8*x*y+15*y*y+23*x+17*y-4915, -12, 12, -20, 20,  1, 2);
+dio_draw_example2():=dio_draw_finite(42*x*x+8*x*y+15*y*y+23*x+17*y-4915=0, -12, 12, -20, 20,  1, 2);
 
-dio_draw_example3():=dio_draw_finite((-2*y^2)-5*x*y+3*x^2-6, -4, 4, -4, 4, 1/2, 1/2);
+dio_draw_example3():=dio_draw_finite(-2*y^2-5*x*y+3*x^2-6=0, -4, 4, -4, 4, 1/2, 1/2);
 
 dio_draw_example4():=dio_draw_infinite(18*y^2-24*x*y+7*y+8*x^2+5*x+16=0, -3, 3, 150, 10);
