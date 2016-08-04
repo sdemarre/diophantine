@@ -153,3 +153,41 @@ block([vars:listofvars(dio_eq)],
         diophantine_solve_parabolic(x, y, a, b, c, d, e, f)
       else
         diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f))));
+
+
+
+defstruct(pqa(a,ip,ap,pp,p,q,g,b,xi,cxi));
+do_pqa(p,q,d):=block([result:dio_pqa(p,q,d)],
+  new(pqa(subst(result,a),
+      subst(result,'ip),
+      subst(result,'ap),
+      subst(result,'pp),
+      subst(result,'p),
+      subst(result,'q),
+      subst(result,'g),
+      subst(result,'b),
+      subst(result,'xi),
+      subst(result,'cxi))));
+
+perfect_squarep(D):=block([iqd:isqrt(D)],is(D-iqd*iqd=0));
+
+dio_min_pos_pell_solution(x,y,D,rhs):=
+    if perfect_squarep(D) then
+    [] /* can't use pqa to solve this type, should be handled in a different way */
+    else
+    block([pqa:do_pqa(0,1,D),period_length],
+      period_length:length(pqa@pp),
+      if evenp(period_length) then
+      if rhs=-1 then []
+                else [x=pqa@g[period_length+2], y = pqa@b[period_length+2]]
+      else
+      if rhs=-1 then [x=pqa@g[period_length+2], y = pqa@b[period_length+2]]
+                else block([x1:pqa@g[period_length+2],y1:pqa@b[period_length+2]], [x=D*y1^2+x1^2,y=2*x1*y1]));
+
+dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,D,rhs)],
+  if length(min_sol) > 0 then block([t:subst(min_sol,x),u:subst(min_sol,y)],
+    if rhs=1 then block([t1:(t+u*sqrt(D))^dio_gensym(),t2:(t-u*sqrt(D))^dio_gensym()],
+      [[x=1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)], [x=-1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)]])
+    else block([t1:(t+u*sqrt(D))^(2*dio_gensym()), t2:(t-u*sqrt(D))^(2*dio_gensym())],
+      [[x=1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)], [x=-1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)]]))
+  else []);
