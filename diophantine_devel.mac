@@ -1,4 +1,5 @@
-dio_trace():=trace(dio_gen_euclid,
+dio_trace():=trace(dio_all_pell_solutions,
+  dio_gen_euclid,
   diophantine_solve_linear,
   diophantine_solve_simple_hyperbolic,
   diophantine_solve_elliptic,
