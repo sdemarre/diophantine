@@ -14,8 +14,12 @@ dio_random_eq(n):=block([a,b,c,d,e,f],
   map(":",[a,b,c,d,e,f],makelist(dio_rand(n),i,1,6)),
   a*x^2+b*x*y+c*y^2+d*x+e*y+f);
 
-eqs_with_solutions(eqns):=block([result:[],eq],
+eqs_with_solutions(eqns,min_solutions):=block([result:[],eq],
   for eq in eqns do block(
-    if length(eq[2]) > 0 then
+    if not atom(eq[2]) and length(eq[2]) > min_solutions then
     push(eq,result)),
   reverse(result));
+
+find_interesting_equations(coeff_max, num_candidates,min_solutions):=
+block([candidates:makelist(dio_random_eq(2*coeff_max),i,1,num_candidates)],
+  sort(eqs_with_solutions(map(lambda([eq],[eq,diophantine_solve(eq)]),candidates),min_solutions),lambda([eq1,eq2],length(eq1[2])>length(eq2[2]))));
