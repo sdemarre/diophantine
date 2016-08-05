@@ -83,3 +83,7 @@ diophantine_solve((-2*y^2)-5*x*y+3*x^2-6);
 /* this fails, but works for the (equivalent) -a^2+a*x-2=0 fix this !!!!*/
 diophantine_solve(-x^2+a*x-2=0);
 [[x = -2,a = -3],[x = -1,a = -3],[x = 1,a = 3],[x = 2,a = 3]]$
+
+/* crash */
+diophantine_solve(10*y^2-20*x*y-15);
+[]$
