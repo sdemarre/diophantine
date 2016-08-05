@@ -98,7 +98,10 @@ diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,
         push([x = xv, y = yv], result))),
           reverse(result)));
 
-diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([b2m4ac:b^2-4*a*c,isq],
+diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
+  if a = 0 then
+  diophantine_solve_hyperbolic_homogenous(y,x,c,b,a,f)
+  else block([b2m4ac:b^2-4*a*c,isq],
   isq:isqrt(b2m4ac),
   if isq^2 = b2m4ac then block(
     if (f = 0) then
@@ -112,7 +115,7 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([b2m4ac:b^2-4*a
         dio_all_pell_solutions(x,y,-c,-f) else tbd
         )
       else block (
-        ))));
+        )))));
 
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then
