@@ -38,4 +38,6 @@ dio_draw_example3():=dio_draw_finite(-2*y^2-5*x*y+3*x^2-6=0, -4, 4, -4, 4, 1/2, 
 
 dio_draw_example4():=dio_draw_infinite(18*y^2-24*x*y+7*y+8*x^2+5*x+16=0, -3, 3, 150, 10, 100);
 
-dio_draw_example5():=dio_draw_infinite(x^2-5*y^2=1,-2,2,10,10,20);
+dio_draw_example5():=dio_draw_infinite(x^2-5*y^2=-1,-2,1,1,1,10);
+
+dio_draw_example6():=dio_draw_infinite(x^2-5*y^2=1,-1,1,1,1,10);
