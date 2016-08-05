@@ -36,9 +36,10 @@ dio_scale_range(range,scale):=block([xsize:range[2]-range[1],ysize:range[4]-rang
   [xmid - xsize/2*scale, xmid + xsize/2*scale, ymid - ysize/2*scale, ymid + ysize/2*scale]);
 dio_draw(eq):=block([sols:diophantine_solve(eq)],
   if not dio_infinite_solutions(sols) then block([point_ranges:dio_point_ranges(dio_sol_values(sols)),new_range],
-    new_range:dio_scale_range(point_ranges,110/100)));
+    new_range:dio_scale_range(point_ranges,1.2),
+    dio_draw_finite(eq,new_range[1],new_range[2],new_range[3],new_range[4],(new_range[2]-new_range[1])/30,(new_range[4]-new_range[3])/25)));
 
-dio_draw_example():=dio_draw_finite(2*x*y+56*y+5*x+7=0, -170, 120, -75, 75, 10, 5);
+dio_draw_example():=dio_draw(2*x*y+56*y+5*x+7=0);
 
 dio_draw_example2():=dio_draw_finite(42*x*x+8*x*y+15*y*y+23*x+17*y-4915=0, -12, 12, -20, 20,  1, 2);
 
@@ -50,6 +51,6 @@ dio_draw_example5():=dio_draw_infinite(x^2-5*y^2=-1,-2,1,1,1,10);
 
 dio_draw_example6():=dio_draw_infinite(x^2-5*y^2=1,-1,1,1,1,10);
 
-dio_draw_example7():=dio_draw_finite(13*y^2+16*x*y-6*y+5*x^2+10*x+14,-200,10,-10,120,5,5);
+dio_draw_example7():=dio_draw(13*y^2+16*x*y-306*y+5*x^2-190*x+1214);
 
-dio_draw_example8():=dio_draw_finite((-11*y^2)+6*x*y-4*y-x^2-14*x,-100,10,-50,10,5,5);
+dio_draw_example8():=dio_draw((-11*y^2)+6*x*y-70*y-x^2+24*x+169);
