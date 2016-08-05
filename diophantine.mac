@@ -190,6 +190,6 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
   if length(min_sol) > 0 then block([t:subst(min_sol,x),u:subst(min_sol,y)],
     if rhs=1 then block([t1:(t+u*sqrt(D))^dio_gensym(),t2:(t-u*sqrt(D))^dio_gensym()],
       [[x=1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)], [x=-1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)]])
-    else block([t1:(t+u*sqrt(D))^(2*dio_gensym()), t2:(t-u*sqrt(D))^(2*dio_gensym())],
-      [[x=1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)], [x=-1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)]]))
+    else block([t1:(t+u*sqrt(D))^(2*dio_gensym()+1), t2:(t-u*sqrt(D))^(2*dio_gensym()+1)],
+      [[x=1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)], [x=1/2*(t1+t2), y=-1/2/sqrt(D)*(t1-t2)]]))
   else []);
