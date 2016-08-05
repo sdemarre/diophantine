@@ -2,7 +2,7 @@ load(draw);
 load(diophantine);
 
 dio_instantiate_results(parametrised_results, nmin, nmax):=
-  apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results));
+  ratsimp(apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results)));
 
 dio_make_points_data(dio_points_result):=block(
   map(lambda([p],[rhs(p[1]),rhs(p[2])]), dio_points_result));
@@ -10,25 +10,25 @@ dio_make_points_data(dio_points_result):=block(
 dio_make_points_labels(point_data, dx, dy):=block(
   apply(label,map(lambda([p],[string(p), p[1]+dx, p[2]+dy]), point_data)));
 
-dio_draw_data(eq, xmin, xmax, ymin, ymax, ldx, ldy, point_data, label_data):=block(
+dio_draw_data(eq, xmin, xmax, ymin, ymax, label_dx, label_dy, point_data, label_data):=block(
     wxdraw2d(font="Helvetica", font_size=20, yrange=[ymin, ymax], title=string(eq), xaxis=true, yaxis=true, ip_grid=[200,200],ip_grid_in=[10,10],
     implicit(eq, x, xmin, xmax, y, ymin, ymax),
     point_size=5, color=red, point_type=circle, points(point_data),
     point_size=2, color=green, point_type=filled_circle, points(point_data),
     color=black, label_data));
 
-dio_draw_finite(eq, xmin, xmax, ymin, ymax, ldx, ldy):=block([solutions, point_data, label_data],
+dio_draw_finite(eq, xmin, xmax, ymin, ymax, label_dx, label_dy):=block([solutions, point_data, label_data],
   solutions:diophantine_solve(eq),
   point_data:dio_make_points_data(solutions),
-  label_data:dio_make_points_labels(point_data, ldx, ldy),
-  dio_draw_data(eq, xmin, xmax, ymin, ymax, ldx, ldy, point_data, label_data));
+  label_data:dio_make_points_labels(point_data, label_dx, label_dy),
+  dio_draw_data(eq, xmin, xmax, ymin, ymax, label_dx, label_dy, point_data, label_data));
 
-dio_draw_infinite(eq, nmin, nmax, ldx, ldy, border):=block([solutions, point_data, label_data, point_ranges],
+dio_draw_infinite(eq, nmin, nmax, label_dx, label_dy, border):=block([solutions, point_data, label_data, point_ranges],
   solutions:diophantine_solve(eq),
   point_data:dio_make_points_data(dio_instantiate_results(solutions, nmin, nmax)),
-  label_data:dio_make_points_labels(point_data, ldx, ldy),
+  label_data:dio_make_points_labels(point_data, label_dx, label_dy),
   point_ranges:[-border,border,-border,border]+dio_point_ranges(point_data),
-  dio_draw_data(eq, point_ranges[1], point_ranges[2], point_ranges[3], point_ranges[4], ldx, ldy, point_data, label_data));
+  dio_draw_data(eq, point_ranges[1], point_ranges[2], point_ranges[3], point_ranges[4], label_dx, label_dy, point_data, label_data));
 
 dio_draw_example():=dio_draw_finite(2*x*y+56*y+5*x+7=0, -170, 120, -75, 75, 10, 5);
 
@@ -37,3 +37,5 @@ dio_draw_example2():=dio_draw_finite(42*x*x+8*x*y+15*y*y+23*x+17*y-4915=0, -12, 
 dio_draw_example3():=dio_draw_finite(-2*y^2-5*x*y+3*x^2-6=0, -4, 4, -4, 4, 1/2, 1/2);
 
 dio_draw_example4():=dio_draw_infinite(18*y^2-24*x*y+7*y+8*x^2+5*x+16=0, -3, 3, 150, 10, 100);
+
+dio_draw_example5():=dio_draw_infinite(x^2-5*y^2=1,-2,2,10,10,20);

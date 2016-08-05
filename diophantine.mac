@@ -108,6 +108,8 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([b2m4ac:b^2-4*a
   else block([g:gcd(gcd(a,b),c)],
     if integerp(f/g) then  block([a:a/g,b:b/g,c:c/g,f:f/g],
       if 4*f^2<b2m4ac then block(
+        if ((b = 0) and (a = 1) and ((f = 1) or (f = -1)) and (c < 0)) then
+        dio_all_pell_solutions(x,y,-c,-f) else tbd
         )
       else block (
         ))));
