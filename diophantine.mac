@@ -153,6 +153,9 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
   else []);
 
 
+diophantine_instantiate_solutions(parametrised_results, nmin, nmax):=
+  ratsimp(apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results)));
+
 diophantine_solve(dio_eq) := nested_sort(diophantine_solve1(dio_eq));
 
 nested_sort (l) :=
