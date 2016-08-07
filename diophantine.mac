@@ -98,6 +98,36 @@ diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,
         push([x = xv, y = yv], result))),
           reverse(result)));
 
+square_divisors(N):=block([result:[]],
+  for f:1 thru isqrt(N) do
+  if mod(N,f^2) = 0 then push(f,result),
+  reverse(result));
+
+/* lmm as described in "Solving the generalized Pell equation" 2004 by John P. Robertson, http://www.jpr2718.org/pell.pdf */
+dio_lmm(x,y,D,N):=block([result:[]],
+  for f in square_divisors(N) do block([m:N/f^2],
+    /*print(['f=f,'m=m]),*/
+    for z:truncate(-abs(m)/2) thru truncate(abs(m)/2) do
+    block([],
+      /*print('z=z,'mod(z^2,abs(m))=mod(z^2,abs(m)),'mod(D,abs(m))=mod(D,abs(m))),*/
+      if mod(z^2,abs(m)) = mod(D,abs(m)) then block([pqa:do_pqa(z,abs(m),D),qi,i:1,r,s,found:false],
+        /*print('pqa=pqa),*/
+        for qi in rest(pqa@q) do block([],
+          i:i+1,
+          if not found and abs(qi)=1 then block([],
+            found:true,
+            r:pqa@g[i-1],
+            s:pqa@b[i-1],
+            if r^2-D*s^2=m then block([],
+              /*print([adding,['r=r,'s=s]]),*/
+              push([x=f*r,y=f*s],result))
+            else block([t,u,sols],
+              sols:dio_min_pos_pell_solution(t,u,D,-1),
+              if not length(sols)=0 then block([],
+                /*print('sols=sols,'r=r),*/
+                push(subst(sols,[x=f*(r*t+s*u*D),y=f*(r*u+s*t)]),result)))))))),
+  result);
+
 diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
   if a = 0 then
   diophantine_solve_hyperbolic_homogenous(y,x,c,b,a,f)
@@ -110,14 +140,17 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
       dio_integer_expressions(x = (u-(b+isq)*(u+4*a*f/u)/2/isq)/2/a, y = (u + 4*a*f/u)/2/isq, [u, append(divs, -1*divs)])))
   else block([g:gcd(gcd(a,b),c)],
     if integerp(f/g) then  block([a:a/g,b:b/g,c:c/g,f:f/g],
-      if (b = 0) and ((f = 1) or (f = -1) or (f = 4) or (f = -4)) then block([],
+      if (b = 0) then
+      if ((f = 1) or (f = -1) or (f = 4) or (f = -4)) then block([],
         if (c < 0) and (a = 1) then
         ratsimp(dio_all_pell_solutions(x,y,-c,-f))
         elseif (a < 0) and (c = 1) then
         ratsimp(dio_all_pell_solutions(y,x,-a,-f))
         else 'tbd1)
-      else 'tbd2)
-    else 'tb3)));
+      elseif (a = 1 and c < 0) or (c = 1 and a < 0) then
+      block([fundamental_solutions:dio_lmm(x,y,if a=1 then -c else -a,-f)],
+        fundamental_solutions))
+    else 'tb2)));
 
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then
@@ -125,12 +158,13 @@ diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   else
     working_on_it);
 
-defstruct(pqa(pp,g,b));
+defstruct(pqa(pp,g,b,q));
 do_pqa(p,q,d):=block([result:dio_pqa(p,q,d)],
   new(pqa(subst(result,'pp),
       /* skip elements -2 and -1 in g and b */
           rest(rest(subst(result,'g))),
-          rest(rest(subst(result,'b))))));
+          rest(rest(subst(result,'b))),
+          subst(result,'q))));
 
 perfect_squarep(D):=block([iqd:isqrt(D)],is(D-iqd*iqd=0));
 
