@@ -23,13 +23,13 @@ Generating some specific values when the solution contains %n can be done like t
 	(%i4) diophantine_solve(3*x+2*y-8);
 	(%o4) [[x=2*%n+2,y=1-3*%n]]
 
-	(%i5) makelist(subst(%n=i,%o4[1]),i,-3,3);
+	(%i5) diophantine_instantiate_solutions(%o4,-3,3);
 	(%o5) [[x = - 4, y = 10], [x = - 2, y = 7], [x = 0, y = 4], [x = 2, y = 1],
 	      	  [x = 4, y = - 2], [x = 6, y = - 5], [x = 8, y = - 8]]
 
 ## Limitations
 
-The hyperbolic case (b^2-4*a*c>0) is work in progress.
+The hyperbolic case (b^2-4*a*c>0) is work in progress. Pell equations (x^2-Dy^2=N)  can now be solved if D and N are not too large.
 
 ## Tests
 
