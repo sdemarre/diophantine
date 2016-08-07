@@ -148,9 +148,15 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
         ratsimp(dio_all_pell_solutions(y,x,-a,-f))
         else 'tbd1)
       elseif (a = 1 and c < 0) or (c = 1 and a < 0) then
-      block([fundamental_solutions:dio_lmm(x,y,if a=1 then -c else -a,-f)],
-        fundamental_solutions))
-    else 'tb2)));
+      block([r,s,t,u,fundamental_solutions,pell_1_solutions,D: if a = 1 then -c else -a],
+        fundamental_solutions: dio_lmm(r,s,D,-f),
+        pell_1_solutions: dio_all_pell_solutions(t, u, D, 1),
+        block([eq:if a = 1 then [x=r*t+s*u*D, y=r*u+s*t] else [y=r*t+s*u*D, x=r*u+s*t],result:[]],
+          for pell_1_solution in pell_1_solutions do
+          for fundamental_solution in fundamental_solutions do
+          push(subst(append(fundamental_solution, pell_1_solution),eq),result),
+          result)))
+    else 'tbd1)));
 
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then
