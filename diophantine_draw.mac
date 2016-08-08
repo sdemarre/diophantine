@@ -9,7 +9,7 @@ dio_make_points_labels(point_data, dx, dy):=block(
 
 dio_draw_data(eq, xmin, xmax, ymin, ymax, label_dx, label_dy, point_data, label_data):=block(
     wxdraw2d(font="Helvetica", font_size=20, yrange=[ymin, ymax], title=string(eq), xaxis=true, yaxis=true, ip_grid=[200,200],ip_grid_in=[10,10],
-    implicit(eq, x, xmin, xmax, y, ymin, ymax),
+    implicit(eq, listofvars(eq)[1], xmin, xmax, listofvars(eq)[2], ymin, ymax),
     point_size=5, color=red, point_type=circle, points(point_data),
     point_size=2, color=green, point_type=filled_circle, points(point_data),
     color=black, label_data));
@@ -29,15 +29,20 @@ dio_draw_infinite(eq, nmin, nmax, label_dx, label_dy, border):=block([solutions,
 
 dio_has_pn(expr):=if atom(expr) then is(expr='%n) else some(dio_has_pn,args(expr));
 dio_infinite_solutions(sol):=dio_has_pn(sol);
-dio_sol_values(sol):=map(lambda([s],[rhs(s[1]),rhs(s[2])]),sol);
 dio_scale_range(range,scale):=block([xsize:range[2]-range[1],ysize:range[4]-range[3],xmid,ymid],
   xmid:range[1]+xsize/2,
   ymid:range[3]+ysize/2,
   [xmid - xsize/2*scale, xmid + xsize/2*scale, ymid - ysize/2*scale, ymid + ysize/2*scale]);
-dio_draw(eq):=block([sols:diophantine_solve(eq)],
-  if not dio_infinite_solutions(sols) then block([point_ranges:dio_point_ranges(dio_sol_values(sols)),new_range],
+dio_draw(eq,[rest]):=block([sols:diophantine_solve(eq)],
+  if not dio_infinite_solutions(sols) then block([point_ranges:dio_point_ranges(dio_make_points_data(sols)),new_range],
     new_range:dio_scale_range(point_ranges,1.2),
-    dio_draw_finite(eq,new_range[1],new_range[2],new_range[3],new_range[4],(new_range[2]-new_range[1])/30,(new_range[4]-new_range[3])/25)));
+    dio_draw_finite(eq,new_range[1],new_range[2],new_range[3],new_range[4],(new_range[2]-new_range[1])/30,(new_range[4]-new_range[3])/25))
+  else block([limits:if length(rest)=2 then rest else [-1,1],points,range,new_range,points],
+    points:diophantine_instantiate_solutions(sols,limits[1],limits[2]),
+    print(points),
+    range:dio_point_ranges(dio_make_points_data(points)),
+    print(range),
+    dio_draw_infinite(eq,limits[1],limits[2],(range[2]-range[1])/30,(range[4]-range[3])/25,(range[2]-range[1])/10)));
 
 dio_draw_example():=dio_draw(2*x*y+56*y+5*x+7=0);
 
