@@ -217,8 +217,12 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
   else []);
 
 
-diophantine_instantiate_solutions(parametrised_results, nmin, nmax):=
-  ratsimp(apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results)));
+diophantine_instantiate_solutions(parametrised_results, nmin, nmax,[rest]):=
+block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results)))],
+  if length(result_list)>0 and length(rest)>0 and (rest[1] = true or rest[1]='sorted) then block([vars:listofvars(result_list[1])],
+    sort(result_list,lambda([a,b],subst(a,vars[1]^2+vars[2]^2) < subst(b,vars[1]^2+vars[2]^2))))
+  else
+  result_list);
 
 diophantine_solve(dio_eq) := nested_sort(diophantine_solve1(dio_eq));
 
