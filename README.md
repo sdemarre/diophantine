@@ -1,12 +1,22 @@
 Maxima program to solve diophantine equations of the form ax^2+bxy+cy^2+dx+ey+f=0 with a,b,c,d,e,f constant integers.
 Based on Dario Alpern's solution/code found at https://www.alpertron.com.ar/QUAD.HTM
 
+[Installing](README.md#install)  
 [Usage](README.md#usage)  
 [Limitations](README.md#limitations)  
 [Tests](README.md#tests)  
 [Graphical examples](README.md#graphical-examples)  
 
-## Usage:
+## Install
+Put the source in some folder, and in maxima do something like
+
+	(%i1) diophantine_source_dir:"<some-folder>"$
+	(%i2) push(sconcat(diophantine_source_dir, "$$$.mac"), file_search_maxima)$
+	(%i3) push(sconcat(diophantine_source_dir, "$$$.lisp"), file_search_lisp)$
+
+It might be useful to put these lines in your maxima-init.mac
+
+## Usage
 
 	(%i1) load(diophantine)$
 
