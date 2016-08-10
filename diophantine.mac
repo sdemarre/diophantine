@@ -155,8 +155,11 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
           for pell_1_solution in pell_1_solutions do
           for fundamental_solution in fundamental_solutions do
           push(subst(append(fundamental_solution, pell_1_solution),eq),result),
-          result)))
-    else 'tbd1)));
+          result))
+      else block([X:gensym(),Y:gensym()],
+        'tbd3)
+      else 'tbd4_b_not_0)
+    else 'tbd2)));
 
 dio_make_b_zero_transform(x,y,X,Y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2],
   e1:2*a/b, B:ratnum(e1), C:denom(e1),
@@ -179,7 +182,7 @@ diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
       eq_sol:diophantine_solve(expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f))),
       map(lambda([s],subst(s,tr)),eq_sol))
     elseif e#0 then block([tr,X:gensym("X"),Y:gensym("Y"),eq_sol],
-      tr:dio_make_d_zero_transform(y,x,Y,X,c,b,a,e,d,f),
+      tr:dio_make_d_zero_transform(y,x,X,Y,c,b,a,e,d,f),
       eq_sol:diophantine_solve(expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f))),
       map(lambda([s],subst(s,tr)),eq_sol))
     else working_on_it);
