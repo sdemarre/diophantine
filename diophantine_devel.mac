@@ -1,5 +1,7 @@
+load(diophantine_draw);
 dio_trace():=trace(dio_all_pell_solutions,
   dio_gen_euclid,
+  dio_make_b_zero, dio_make_d_zero,
   diophantine_solve_linear,
   diophantine_solve_simple_hyperbolic,
   diophantine_solve_elliptic,
@@ -23,3 +25,5 @@ eqs_with_solutions(eqns,min_solutions):=block([result:[],eq],
 find_interesting_equations(coeff_max, num_candidates,min_solutions):=
 block([candidates:makelist(dio_random_eq(2*coeff_max),i,1,num_candidates)],
   sort(eqs_with_solutions(map(lambda([eq],[eq,diophantine_solve(eq)]),candidates),min_solutions),lambda([eq1,eq2],length(eq1[2])>length(eq2[2]))));
+
+dio_subst(sols,eq):=map(lambda([s],subst(s,eq)),sols);

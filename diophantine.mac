@@ -158,11 +158,31 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
           result)))
     else 'tbd1)));
 
+dio_make_b_zero_transform(x,y,X,Y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2],
+  e1:2*a/b, B:ratnum(e1), C:denom(e1),
+  e2:a/B^2, A:ratnum(e2), T:denom(e2),
+  [x=1/B*X-C/B*Y,y=Y]);
+dio_make_d_zero_transform(x,y,X,Y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2],
+  e1:2*a/d, B:ratnum(e1), C:denom(e1),
+  e2:a/B^2, A:ratnum(e2), T:denom(e2),
+  [x=1/B*X-C/B,y=Y]);
+
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then
     diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f)
-  else
-    working_on_it);
+    elseif b#0 then block([tr,X:gensym("X"),Y:gensym("Y"),eq_sol],
+      tr:dio_make_b_zero_transform(x,y,X,Y,a,b,c,d,e,f),
+      eq_sol:diophantine_solve(expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f))),
+      map(lambda([s],subst(s,tr)),eq_sol))
+    elseif d#0 then block([tr,X:gensym("X"),Y:gensym("Y"),eq_sol],
+      tr:dio_make_d_zero_transform(x,y,X,Y,a,b,c,d,e,f),
+      eq_sol:diophantine_solve(expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f))),
+      map(lambda([s],subst(s,tr)),eq_sol))
+    elseif e#0 then block([tr,X:gensym("X"),Y:gensym("Y"),eq_sol],
+      tr:dio_make_d_zero_transform(y,x,Y,X,c,b,a,e,d,f),
+      eq_sol:diophantine_solve(expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f))),
+      map(lambda([s],subst(s,tr)),eq_sol))
+    else working_on_it);
 
 defstruct(pqa(pp,g,b,q));
 do_pqa(p,q,d):=block([result:dio_pqa(p,q,d)],
