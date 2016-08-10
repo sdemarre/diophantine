@@ -27,3 +27,15 @@ block([candidates:makelist(dio_random_eq(2*coeff_max),i,1,num_candidates)],
   sort(eqs_with_solutions(map(lambda([eq],[eq,diophantine_solve(eq)]),candidates),min_solutions),lambda([eq1,eq2],length(eq1[2])>length(eq2[2]))));
 
 dio_subst(sols,eq):=map(lambda([s],subst(s,eq)),sols);
+
+dio_coeffs(eq):=block([vars:listofvars(eq)],
+  if length(vars)=1 then vars:[vars[1],gensym()],
+  ['a=coeff(eq,vars[1],2),'b=coeff(coeff(eq,vars[2]),vars[1]),'c=coeff(eq,vars[2],2),'d=coeff(coeff(eq,vars[1]),vars[2],0),'e=coeff(coeff(eq,vars[2]),vars[1],0),'f=coeff(coeff(eq,vars[1],0),vars[2],0)]);
+
+remove_if(list,pred):=block([result:[],e],
+  for e in list do if not pred(e) then push(e,result),
+  reverse(result));
+
+remove_if_not(list,pred):=remove_if(list, lambda([e],not pred(e)));
+
+integer_solution_p(s):=integerp(rhs(s[1])) and integerp(rhs(s[2]));
