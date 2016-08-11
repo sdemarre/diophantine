@@ -1,7 +1,8 @@
 load(diophantine_draw);
 dio_trace():=trace(dio_all_pell_solutions,
   dio_gen_euclid,
-  dio_make_b_zero, dio_make_d_zero,
+  dio_make_b_zero_transform, dio_make_d_zero_transform,
+  dio_solve_with_transform,
   diophantine_solve_linear,
   diophantine_solve_simple_hyperbolic,
   diophantine_solve_elliptic,

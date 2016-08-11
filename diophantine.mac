@@ -16,6 +16,7 @@ dio_error_not_implemented:"Can't solve this type of diophantine equation (yet?)"
 
 load(to_poly_solve);
 load(dio_lisp_helpers);
+load(functs);
 
 dio_gensym():='%n;
 
@@ -156,35 +157,37 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
           for fundamental_solution in fundamental_solutions do
           push(subst(append(fundamental_solution, pell_1_solution),eq),result),
           result))
+      elseif (a=-1 or c=-1) then diophantine_solve(-a*x^2-c*y^2-f)
       else block([X:gensym(),Y:gensym()],
         'tbd3)
       else 'tbd4_b_not_0)
     else 'tbd2)));
 
-dio_make_b_zero_transform(x,y,X,Y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2],
+dio_solve_with_transform(x,y,a,b,c,d,e,f,trfunc):=block([tr_eq,tr_eq_sol,tr],
+  tr:trfunc(x,y,a,b,c,d,e,f),
+  tr_eq:expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f)),
+  tr_eq_sol:diophantine_solve(tr_eq),
+  map(lambda([s],subst(s,tr)),tr_eq_sol));
+dio_make_b_zero_transform(x,y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2,X:gensym("X"),Y:gensym("Y")],
   e1:2*a/b, B:ratnum(e1), C:denom(e1),
   e2:a/B^2, A:ratnum(e2), T:denom(e2),
   [x=1/B*X-C/B*Y,y=Y]);
-dio_make_d_zero_transform(x,y,X,Y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2],
+dio_make_d_zero_transform(x,y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2,X:gensym("X"),Y:gensym("Y")],
   e1:2*a/d, B:ratnum(e1), C:denom(e1),
   e2:a/B^2, A:ratnum(e2), T:denom(e2),
   [x=1/B*X-C/B,y=Y]);
+dio_make_e_zero_transform(x,y,a,b,c,d,e,f):=dio_make_d_zero_transform(y,x,c,b,a,e,d,f);
+dio_make_a_one_transform(x,y,a,b,c,d,e,f):=block([X:gensym("X"),Y:gensym("Y")],
+  [x=X/a,y=Y]);
+
 
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then
     diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f)
-    elseif b#0 then block([tr,X:gensym("X"),Y:gensym("Y"),eq_sol],
-      tr:dio_make_b_zero_transform(x,y,X,Y,a,b,c,d,e,f),
-      eq_sol:diophantine_solve(expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f))),
-      map(lambda([s],subst(s,tr)),eq_sol))
-    elseif d#0 then block([tr,X:gensym("X"),Y:gensym("Y"),eq_sol],
-      tr:dio_make_d_zero_transform(x,y,X,Y,a,b,c,d,e,f),
-      eq_sol:diophantine_solve(expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f))),
-      map(lambda([s],subst(s,tr)),eq_sol))
-    elseif e#0 then block([tr,X:gensym("X"),Y:gensym("Y"),eq_sol],
-      tr:dio_make_d_zero_transform(y,x,X,Y,c,b,a,e,d,f),
-      eq_sol:diophantine_solve(expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f))),
-      map(lambda([s],subst(s,tr)),eq_sol))
+    elseif b#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_b_zero_transform)
+    elseif d#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_d_zero_transform)
+    elseif e#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_e_zero_transform)
+    elseif abs(a)#1 and abs(c)#1 then dio_solve_with_transform(x,y,a,b,c,d,e,f, dio_make_a_one_transform)
     else working_on_it);
 
 defstruct(pqa(pp,g,b,q));
