@@ -101,3 +101,12 @@ diophantine_solve(-2*y^2-x*y-4*y+2*x-2);
 [[x = 25,y = -16],[x = 8,y = -7],[x = 3,y = -4],[x = 0,y = -1],[x = 1,y = 0],
  [x = 8,y = 1],[x = -32,y = 3],[x = -25,y = 4],[x = -24,y = 5],
  [x = -27,y = 8],[x = -32,y = 11],[x = -49,y = 20]]$
+
+
+/* unhandled case ?*/
+diophantine_solve(2*x^2-3*y^2=1);
+[]
+
+/* duplicate solutions, due to y=+-0 */
+diophantine_solve(x^2+2*y^2=16);
+[]
