@@ -31,6 +31,7 @@ dio_subst(sols,eq):=map(lambda([s],subst(s,eq)),sols);
 
 dio_coeffs(eq):=block([vars:listofvars(eq)],
   if length(vars)=1 then vars:[vars[1],gensym()],
+  if op(eq)="=" then eq:lhs(eq)-rhs(eq),
   ['a=coeff(eq,vars[1],2),'b=coeff(coeff(eq,vars[2]),vars[1]),'c=coeff(eq,vars[2],2),'d=coeff(coeff(eq,vars[1]),vars[2],0),'e=coeff(coeff(eq,vars[2]),vars[1],0),'f=coeff(coeff(eq,vars[1],0),vars[2],0)]);
 
 remove_if(list,pred):=block([result:[],e],
@@ -44,3 +45,6 @@ remove_if_not(list,pred):=block([result:[],e],
 integer_solution_p(s):=integerp(rhs(s[1])) and integerp(rhs(s[2]));
 
 remove_rat_sols(s):=remove_if_not(s,integer_solution_p);
+
+diophantine_brute_force(eq,limit):=block([coeffs:dio_coeffs(eq),vars:listofvars(eq)],
+  map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit]))));

@@ -91,3 +91,14 @@
 	  (reduce #'max point-data :key #'first)
 	  (reduce #'min point-data :key #'second)
 	  (reduce #'max point-data :key #'second))))
+
+(defun $dio_brute_force (a b c d e f limit)
+  (flet ((f (x y) (+ (* a x x) (* b x y) (* c y y) (* d x) (* e y) f)))
+    (cons '(mlist simp)
+          (reverse
+           (let (result)
+             (loop for x from (- limit) to limit do
+                  (loop for y from (- limit) to limit do
+                       (when (zerop (f x y))
+                         (push (list '(mlist simp) x y) result))))
+             result)))))
