@@ -1,7 +1,7 @@
 load(diophantine_draw);
 dio_trace():=trace(dio_all_pell_solutions,
   dio_gen_euclid,
-  dio_make_b_zero_transform, dio_make_d_zero_transform,
+  dio_make_b_zero_transform, dio_make_d_zero_transform, dio_make_a_one_transform,
   dio_solve_with_transform,
   diophantine_solve_linear,
   diophantine_solve_simple_hyperbolic,
@@ -23,7 +23,7 @@ eqs_with_solutions(eqns,min_solutions):=block([result:[],eq],
     push(eq,result)),
   reverse(result));
 
-find_interesting_equations(coeff_max, num_candidates,min_solutions):=
+find_interesting_equations(coeff_max, num_candidates, min_solutions):=
 block([candidates:makelist(dio_random_eq(2*coeff_max),i,1,num_candidates)],
   sort(eqs_with_solutions(map(lambda([eq],[eq,diophantine_solve(eq)]),candidates),min_solutions),lambda([eq1,eq2],length(eq1[2])>length(eq2[2]))));
 
@@ -37,6 +37,10 @@ remove_if(list,pred):=block([result:[],e],
   for e in list do if not pred(e) then push(e,result),
   reverse(result));
 
-remove_if_not(list,pred):=remove_if(list, lambda([e],not pred(e)));
+remove_if_not(list,pred):=block([result:[],e],
+  for e in list do if pred(e) then push(e,result),
+  reverse(result));
 
 integer_solution_p(s):=integerp(rhs(s[1])) and integerp(rhs(s[2]));
+
+remove_rat_sols(s):=remove_if_not(s,integer_solution_p);

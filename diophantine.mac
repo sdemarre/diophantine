@@ -141,32 +141,32 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
       dio_integer_expressions(x = (u-(b+isq)*(u+4*a*f/u)/2/isq)/2/a, y = (u + 4*a*f/u)/2/isq, [u, append(divs, -1*divs)])))
   else block([g:gcd(gcd(a,b),c)],
     if integerp(f/g) then  block([a:a/g,b:b/g,c:c/g,f:f/g],
-      if (b = 0) then
-      if ((f = 1) or (f = -1) or (f = 4) or (f = -4)) then block([],
-        if (c < 0) and (a = 1) then
-        ratsimp(dio_all_pell_solutions(x,y,-c,-f))
-        elseif (a < 0) and (c = 1) then
-        ratsimp(dio_all_pell_solutions(y,x,-a,-f))
-        else 'tbd1)
-      elseif (a = 1 and c < 0) or (c = 1 and a < 0) then
-      block([r,s,t,u,fundamental_solutions,pell_1_solutions,D: if a = 1 then -c else -a],
-        fundamental_solutions: dio_lmm(r,s,D,-f),
-        pell_1_solutions: dio_all_pell_solutions(t, u, D, 1),
-        block([eq:if a = 1 then [x=r*t+s*u*D, y=r*u+s*t] else [y=r*t+s*u*D, x=r*u+s*t],result:[]],
-          for pell_1_solution in pell_1_solutions do
-          for fundamental_solution in fundamental_solutions do
-          push(subst(append(fundamental_solution, pell_1_solution),eq),result),
-          result))
-      elseif (a=-1 or c=-1) then diophantine_solve(-a*x^2-c*y^2-f)
-      else block([X:gensym(),Y:gensym()],
-        'tbd3)
+      if (b = 0) then block([],
+        if ((f = 1) or (f = -1) or (f = 4) or (f = -4)) then block([],
+          if (c < 0) and (a = 1) then
+          ratsimp(dio_all_pell_solutions(x,y,-c,-f))
+          elseif (a < 0) and (c = 1) then
+          ratsimp(dio_all_pell_solutions(y,x,-a,-f))
+          else 'tbd1)
+        elseif (a = 1 and c < 0) or (c = 1 and a < 0) then
+        block([r,s,t,u,fundamental_solutions,pell_1_solutions,D: if a = 1 then -c else -a],
+          fundamental_solutions: dio_lmm(r,s,D,-f),
+          pell_1_solutions: dio_all_pell_solutions(t, u, D, 1),
+          block([eq:if a = 1 then [x=r*t+s*u*D, y=r*u+s*t] else [y=r*t+s*u*D, x=r*u+s*t],result:[]],
+            for pell_1_solution in pell_1_solutions do
+            for fundamental_solution in fundamental_solutions do
+            push(subst(append(fundamental_solution, pell_1_solution),eq),result),
+            result))
+        elseif (a=-1 or c=-1) then diophantine_solve(-a*x^2-c*y^2-f)
+        else dio_solve_with_transform(x,y,a,0,c,0,0,f,dio_make_a_one_transform))
       else 'tbd4_b_not_0)
     else 'tbd2)));
 
 dio_solve_with_transform(x,y,a,b,c,d,e,f,trfunc):=block([tr_eq,tr_eq_sol,tr],
   tr:trfunc(x,y,a,b,c,d,e,f),
   tr_eq:expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f)),
-  tr_eq_sol:diophantine_solve(tr_eq),
+  tr_eq:tr_eq*lcm(map(denom,map(rhs,dio_coeffs(tr_eq)))),
+  tr_eq_sol:diophantine_solve(expand(tr_eq)),
   map(lambda([s],subst(s,tr)),tr_eq_sol));
 dio_make_b_zero_transform(x,y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2,X:gensym("X"),Y:gensym("Y")],
   e1:2*a/b, B:ratnum(e1), C:denom(e1),
@@ -242,7 +242,6 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
       [[x=1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)], [x=-1/2*(t1+t2), y=-1/2/sqrt(D)*(t1-t2)]]))
   else []);
 
-
 diophantine_instantiate_solutions(parametrised_results, nmin, nmax,[rest]):=
 block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results)))],
   if length(result_list)>0 and length(rest)>0 and (rest[1] = true or rest[1]='sorted) then block([vars:listofvars(result_list[1])],
@@ -272,17 +271,18 @@ block([vars:listofvars(dio_eq)],
       d:subst(y=0, coeff(dio_eq, x)),
       e:subst(x=0,coeff(dio_eq,y)),
       f:subst([x=0,y=0],dio_eq)],
-      map(":",['a,'b,'c,'d,'e,'f],rest(ezgcd(a,b,c,d,e,f))),
       if not every(integerp, {a,b,c,d,e,f}) then
         error (dio_error_integer_coeffs)
-      elseif (a = 0 and b = 0 and c = 0) then
-        diophantine_solve_linear(x, y, d, e, f)
-      elseif (a = 0 and c = 0 and b # 0) then
-        diophantine_solve_simple_hyperbolic(x, y, b, d, e, f)
-      elseif b^2-4*a*c < 0 then
-        diophantine_solve_elliptic(x, y, a, b, c, d, e, f)
-      elseif b^2-4*a*c = 0 then
-        diophantine_solve_parabolic(x, y, a, b, c, d, e, f)
-      else
-        diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f))));
+      else block([],
+        map(":",['a,'b,'c,'d,'e,'f],rest(ezgcd(a,b,c,d,e,f))),
+        if (a = 0 and b = 0 and c = 0) then
+          diophantine_solve_linear(x, y, d, e, f)
+        elseif (a = 0 and c = 0 and b # 0) then
+          diophantine_solve_simple_hyperbolic(x, y, b, d, e, f)
+        elseif b^2-4*a*c < 0 then
+          diophantine_solve_elliptic(x, y, a, b, c, d, e, f)
+        elseif b^2-4*a*c = 0 then
+          diophantine_solve_parabolic(x, y, a, b, c, d, e, f)
+        else
+          diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f)))));
 
