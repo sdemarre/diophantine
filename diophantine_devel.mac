@@ -27,24 +27,5 @@ find_interesting_equations(coeff_max, num_candidates, min_solutions):=
 block([candidates:makelist(dio_random_eq(2*coeff_max),i,1,num_candidates)],
   sort(eqs_with_solutions(map(lambda([eq],[eq,diophantine_solve(eq)]),candidates),min_solutions),lambda([eq1,eq2],length(eq1[2])>length(eq2[2]))));
 
-dio_subst(sols,eq):=map(lambda([s],subst(s,eq)),sols);
-
-dio_coeffs(eq):=block([vars:listofvars(eq)],
-  if length(vars)=1 then vars:[vars[1],gensym()],
-  if op(eq)="=" then eq:lhs(eq)-rhs(eq),
-  ['a=coeff(eq,vars[1],2),'b=coeff(coeff(eq,vars[2]),vars[1]),'c=coeff(eq,vars[2],2),'d=coeff(coeff(eq,vars[1]),vars[2],0),'e=coeff(coeff(eq,vars[2]),vars[1],0),'f=coeff(coeff(eq,vars[1],0),vars[2],0)]);
-
-remove_if(list,pred):=block([result:[],e],
-  for e in list do if not pred(e) then push(e,result),
-  reverse(result));
-
-remove_if_not(list,pred):=block([result:[],e],
-  for e in list do if pred(e) then push(e,result),
-  reverse(result));
-
-integer_solution_p(s):=integerp(rhs(s[1])) and integerp(rhs(s[2]));
-
-remove_rat_sols(s):=remove_if_not(s,integer_solution_p);
-
 diophantine_brute_force(eq,limit):=block([coeffs:dio_coeffs(eq),vars:listofvars(eq)],
   map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit]))));

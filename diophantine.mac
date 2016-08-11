@@ -162,12 +162,35 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
       else 'tbd4_b_not_0)
     else 'tbd2)));
 
-dio_solve_with_transform(x,y,a,b,c,d,e,f,trfunc):=block([tr_eq,tr_eq_sol,tr],
+dio_has_pn(expr):=if atom(expr) then is(expr='%n) else some(dio_has_pn,args(expr));
+dio_infinite_solutions(sol):=dio_has_pn(sol);
+
+remove_if(list,pred):=block([result:[],e],
+  for e in list do if not pred(e) then push(e,result),
+  reverse(result));
+
+remove_if_not(list,pred):=block([result:[],e],
+  for e in list do if pred(e) then push(e,result),
+  reverse(result));
+
+integer_solution_p(s):=integerp(rhs(s[1])) and integerp(rhs(s[2]));
+
+remove_rat_sols(s):=remove_if_not(s,integer_solution_p);
+
+dio_subst(sols,eq):=map(lambda([s],subst(s,eq)),sols);
+
+dio_coeffs(eq):=block([vars:listofvars(eq)],
+  if length(vars)=1 then vars:[vars[1],gensym()],
+  if op(eq)="=" then eq:lhs(eq)-rhs(eq),
+  ['a=coeff(eq,vars[1],2),'b=coeff(coeff(eq,vars[2]),vars[1]),'c=coeff(eq,vars[2],2),'d=coeff(coeff(eq,vars[1]),vars[2],0),'e=coeff(coeff(eq,vars[2]),vars[1],0),'f=coeff(coeff(eq,vars[1],0),vars[2],0)]);
+
+dio_solve_with_transform(x,y,a,b,c,d,e,f,trfunc):=block([tr_eq,tr_eq_sol,tr,result],
   tr:trfunc(x,y,a,b,c,d,e,f),
   tr_eq:expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f)),
   tr_eq:tr_eq*lcm(map(denom,map(rhs,dio_coeffs(tr_eq)))),
   tr_eq_sol:diophantine_solve(expand(tr_eq)),
-  map(lambda([s],subst(s,tr)),tr_eq_sol));
+  result:map(lambda([s],subst(s,tr)),tr_eq_sol),
+  if dio_infinite_solutions(result) then result else remove_rat_sols(result));
 dio_make_b_zero_transform(x,y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2,X:gensym("X"),Y:gensym("Y")],
   e1:2*a/b, B:ratnum(e1), C:denom(e1),
   e2:a/B^2, A:ratnum(e2), T:denom(e2),
@@ -180,10 +203,10 @@ dio_make_e_zero_transform(x,y,a,b,c,d,e,f):=dio_make_d_zero_transform(y,x,c,b,a,
 dio_make_a_one_transform(x,y,a,b,c,d,e,f):=block([X:gensym("X"),Y:gensym("Y")],
   [x=X/a,y=Y]);
 
-
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then
     diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f)
+    elseif a=0 then diophantine_solve_hyperbolic(y,x,c,b,a,e,d,f)
     elseif b#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_b_zero_transform)
     elseif d#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_d_zero_transform)
     elseif e#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_e_zero_transform)
