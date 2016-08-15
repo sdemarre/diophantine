@@ -159,7 +159,7 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
             result))
         elseif (a=-1 or c=-1) then diophantine_solve(-a*x^2-c*y^2-f)
         else dio_solve_with_transform(x,y,a,0,c,0,0,f,dio_make_a_one_transform))
-      else 'tbd4_b_not_0)
+      else dio_solve_with_transform(x,y,a,b,c,0,0,f,dio_make_b_zero_transform))
     else 'tbd2)));
 
 dio_has_pn(expr):=if atom(expr) then is(expr='%n) else some(dio_has_pn,args(expr));
