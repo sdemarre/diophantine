@@ -165,17 +165,17 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
 dio_has_pn(expr):=if atom(expr) then is(expr='%n) else some(dio_has_pn,args(expr));
 dio_infinite_solutions(sol):=dio_has_pn(sol);
 
-remove_if(list,pred):=block([result:[],e],
+remove_if(pred, list):=block([result:[],e],
   for e in list do if not pred(e) then push(e,result),
   reverse(result));
 
-remove_if_not(list,pred):=block([result:[],e],
+remove_if_not(pred, list):=block([result:[],e],
   for e in list do if pred(e) then push(e,result),
   reverse(result));
 
 integer_solution_p(s):=integerp(rhs(s[1])) and integerp(rhs(s[2]));
 
-remove_rat_sols(s):=remove_if_not(s,integer_solution_p);
+remove_rat_sols(s):=remove_if_not(integer_solution_p, s);
 
 dio_subst(sols,eq):=map(lambda([s],subst(s,eq)),sols);
 
