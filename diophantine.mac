@@ -147,6 +147,7 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
           ratsimp(dio_all_pell_solutions(x,y,-c,-f))
           elseif (a < 0) and (c = 1) then
           ratsimp(dio_all_pell_solutions(y,x,-a,-f))
+          elseif a=-1 then diophantine_solve(-a*x*x-c*y*y-f)
           else dio_solve_with_transform(x,y,a,0,c,0,0,f,dio_make_a_one_transform))
         elseif (a = 1 and c < 0) or (c = 1 and a < 0) then
         block([r,s,t,u,fundamental_solutions,pell_1_solutions,D: if a = 1 then -c else -a],
