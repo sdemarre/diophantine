@@ -202,6 +202,10 @@ dio_make_d_zero_transform(x,y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2,X:gensym("X"),Y
 dio_make_e_zero_transform(x,y,a,b,c,d,e,f):=dio_make_d_zero_transform(y,x,c,b,a,e,d,f);
 dio_make_a_one_transform(x,y,a,b,c,d,e,f):=block([X:gensym("X"),Y:gensym("Y")],
   [x=X/a,y=Y]);
+dio_apply_transform(eq,transform_name):=block([vars:listofvars(eq),coeffs:map(rhs,dio_coeffs(eq)),new_eq,transform],
+  transform:apply(transform_name,append(vars,coeffs)),
+  new_eq:expand(subst(transform,eq)));  /*,
+  expand(apply(lcm,map(rhs,dio_coeffs(new_eq))))*/
 
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then
@@ -267,10 +271,12 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
 
 diophantine_instantiate_solutions(parametrised_results, nmin, nmax,[rest]):=
 block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results)))],
-  if member(sorted,rest) then
+  if member('sorted,rest) then
     result_list:sort(result_list,lambda([a,b],rhs(a[1])^2+rhs(a[2])^2 < rhs(b[1])^2+rhs(b[2])^2)),
-  if member(integer,rest) then
+  if member('integer,rest) then
     result_list:remove_rat_sols(result_list),
+  if member('no_eq,rest) then
+    result_list:map(lambda([s],[rhs(s[1]),rhs(s[2])]),result_list),
   result_list);
 
 diophantine_solve(dio_eq) := nested_sort(diophantine_solve1(dio_eq));
