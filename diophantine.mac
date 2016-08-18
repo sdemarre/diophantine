@@ -270,10 +270,12 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
       [[x=1/2*(t1+t2), y=1/2/sqrt(D)*(t1-t2)], [x=-1/2*(t1+t2), y=-1/2/sqrt(D)*(t1-t2)]]))
   else []);
 
+dio_solution_magnitude_less_p(s1,s2):=rhs(s1[1])^2+rhs(s1[2])^2 < rhs(s2[1])^2+rhs(s2[2])^2;
+
 diophantine_instantiate_solutions(parametrised_results, nmin, nmax,[rest]):=
 block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results)))],
   if member('sorted,rest) then
-    result_list:sort(result_list,lambda([a,b],rhs(a[1])^2+rhs(a[2])^2 < rhs(b[1])^2+rhs(b[2])^2)),
+    result_list:sort(result_list,dio_solution_magnitude_less_p),
   if member('integer,rest) then
     result_list:remove_rat_sols(result_list),
   if member('no_eq,rest) then

@@ -27,8 +27,9 @@ find_interesting_equations(coeff_max, num_candidates, min_solutions):=
 block([candidates:makelist(dio_random_eq(2*coeff_max),i,1,num_candidates)],
   sort(eqs_with_solutions(map(lambda([eq],[eq,diophantine_solve(eq)]),candidates),min_solutions),lambda([eq1,eq2],length(eq1[2])>length(eq2[2]))));
 
-diophantine_brute_force(eq,limit):=block([coeffs:dio_coeffs(eq),vars:listofvars(eq)],
-  map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit]))));
+diophantine_brute_force(eq,limit,[rest]):=block([coeffs:dio_coeffs(eq),vars:listofvars(eq),sln],
+  sln:map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit]))),
+  if member('sorted,rest) then sort(sln,dio_solution_magnitude_less_p) else sln);
 
 dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coeffs:dio_coeffs(eq)],
   if is(subst(coeffs,condition)) then
