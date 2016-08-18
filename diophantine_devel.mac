@@ -61,3 +61,16 @@ make_b_zero(eq):=block([t:dio_compute_transform_if(eq, 'b#0, dio_make_b_zero_tra
 make_d_zero(eq):=block([t:dio_compute_transform_if(eq, 'd#0, dio_make_d_zero_transform)],  [t,dio_reset_vars(expand(subst(t,eq)))]);
 make_e_zero(eq):=block([t:dio_compute_transform_if(eq, 'e#0, dio_make_e_zero_transform)],  [t,dio_reset_vars(expand(subst(t,eq)))]);
 make_a_one(eq):=block([t:dio_compute_transform_if(eq, 'a#1, dio_make_a_one_transform)],  [t,dio_reset_vars(expand(subst(t,eq)))]);
+
+
+find_eq_with_powers():=block([eq:dio_random_eq(10),s,M],
+  global_eq:eq,
+  s:ratsimp(diophantine_solve(eq)),
+  if s#[] and dio_infinite_solutions(s) then block([tftable,counts],
+    tftable:map(lambda([sol],map(integer_solution_p,sol)),makelist(ratsimp(subst(%n=i,s)),i,0,20)),
+    counts:map(lambda([l],?count(true,l)),args(transpose(apply(matrix,tftable)))),
+    [eq,counts])
+  else [eq,not_interesting]);
+
+
+/* remove_if(lambda([d],d[2]=not_interesting),makelist(find_eq_with_powers(),i,0,20)); */

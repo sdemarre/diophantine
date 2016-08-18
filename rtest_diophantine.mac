@@ -114,3 +114,16 @@ diophantine_solve(x^2+2*y^2=16);
 /*crash?*/
 diophantine_solve(y^2+x*y-y-3*x^2+2*x+1);
 []$
+
+/* duplicate answers ? and rational solutions, even though it's not hyperbolic */
+diophantine_solve(3*x^2+x*y-x);
+[[x=0,y=%n],[x=-%n,y=3*%n+1]]$
+
+/* recursive calls to diophantine_solve */
+diophantine_solve(-x^2+2*y^2+4)$
+[]$
+
+
+/* interesting rationals */
+diophantine_solve(4*y^2-4*x*y-4*y-2*x^2+x-1);
+[]$
