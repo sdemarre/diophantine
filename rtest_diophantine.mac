@@ -86,6 +86,8 @@ diophantine_solve(-x^2+a*x-2=0);
 diophantine_solve(10*y^2-20*x*y-15);
 []$
 
+diophantine_solve(2*x^2-3*y^2=1);
+[]$
 
 /* miscellaneous encountered problems */
 /* slow */
@@ -103,15 +105,11 @@ diophantine_solve(-2*y^2-x*y-4*y+2*x-2);
  [x = 8,y = -7],[x = 8,y = 1],[x = 25,y = -16]]$
 
 
-/* unhandled case ?*/
-diophantine_solve(2*x^2-3*y^2=1);
-[]$
-
 /* duplicate solutions, due to y=+-0 */
 diophantine_solve(x^2+2*y^2=16);
 [[x=-4,y=0],[x=4,y=0]]$
 
-/*crash?*/
+/*crash? no, not immediately, but slow*/
 diophantine_solve(y^2+x*y-y-3*x^2+2*x+1);
 []$
 
@@ -126,4 +124,18 @@ diophantine_solve(-x^2+2*y^2+4)$
 
 /* interesting rationals */
 diophantine_solve(4*y^2-4*x*y-4*y-2*x^2+x-1);
+[]$
+
+diophantine_solve((-2*y^2)+2*x*y-3*y+2*x^2+3*x-1);
+[]$
+
+diophantine_solve(y^2-2*x*y-4*x^2+x);
+[]$
+
+/* slow even though there are no solutions, and manual transform to pell finds that immediately */
+diophantine_solve(x^2+11*x*y-11*y^2-12*x-y-1);
+[]$
+
+/* does something silly (which is reserved for infinite solutions) even though there are just a finite number of solutions */
+diophantine_solve(x^2+10*x*y-11*y^2-12*x-y-1);
 []$
