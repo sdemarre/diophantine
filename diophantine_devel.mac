@@ -31,9 +31,10 @@ diophantine_brute_force(eq,limit,[rest]):=block([coeffs:dio_coeffs(eq),vars:list
   sln:map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit]))),
   if member('sorted,rest) then sort(sln,dio_solution_magnitude_less_p) else sln);
 
-dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coeffs:dio_coeffs(eq)],
-  if is(subst(coeffs,condition)) then
-    ev(subst(coeffs,''transform(vars[1],vars[2],a,b,c,d,e,f)),nouns)
+dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coeffs:dio_coeffs(eq),t],
+  if is(subst(coeffs,condition)) then (
+    t:subst(coeffs,'apply(transform,[vars[1],vars[2],a,b,c,d,e,f])),
+    ev(t,nouns))
   else
     []);
 
