@@ -40,13 +40,13 @@ dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coe
 
 dio_make_coeffs_integer(eq):=expand(lcm(map(denom,map(rhs,dio_coeffs(eq))))*eq);
 diophantine_compute_transforms_to_pell(eq):=block([cur_eq:eq,transforms:[]],
-  transform:dio_compute_transform_if(cur_eq,'b#0,dio_make_b_zero_transform), print('cur_eq=cur_eq), cur_eq:expand(subst(transform, cur_eq)),print('transform=transform), print('new_eq=cur_eq),
+  transform:dio_compute_transform_if(cur_eq,'b#0,dio_make_b_zero_transform), cur_eq:expand(subst(transform, cur_eq)),
   if not emptyp(transform) then push(transform, transforms), cur_eq:dio_make_coeffs_integer(cur_eq),
-  transform:dio_compute_transform_if(cur_eq,'d#0,dio_make_d_zero_transform), print('cur_eq=cur_eq), cur_eq:expand(subst(transform, cur_eq)),print('transform=transform), print('new_eq=cur_eq),
+  transform:dio_compute_transform_if(cur_eq,'d#0,dio_make_d_zero_transform), cur_eq:expand(subst(transform, cur_eq)),
   if not emptyp(transform) then push(transform, transforms), cur_eq:dio_make_coeffs_integer(cur_eq),
-  transform:dio_compute_transform_if(cur_eq,'e#0,dio_make_e_zero_transform), print('cur_eq=cur_eq), cur_eq:expand(subst(transform, cur_eq)),print('transform=transform), print('new_eq=cur_eq),
+  transform:dio_compute_transform_if(cur_eq,'e#0,dio_make_e_zero_transform), cur_eq:expand(subst(transform, cur_eq)),
   if not emptyp(transform) then push(transform, transforms), cur_eq:dio_make_coeffs_integer(cur_eq),
-  transform:dio_compute_transform_if(cur_eq,'a#1,dio_make_a_one_transform), print('cur_eq=cur_eq), cur_eq:expand(subst(transform, cur_eq)),print('transform=transform), print('new_eq=cur_eq),
+  transform:dio_compute_transform_if(cur_eq,'a#1,dio_make_a_one_transform), cur_eq:expand(subst(transform, cur_eq)),
   if not emptyp(transform) then push(transform, transforms),
   transforms);
 
