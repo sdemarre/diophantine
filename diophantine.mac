@@ -208,15 +208,28 @@ dio_apply_transform(eq,transform_name):=block([vars:listofvars(eq),coeffs:map(rh
   new_eq:expand(subst(transform,eq)));  /*,
   expand(apply(lcm,map(rhs,dio_coeffs(new_eq))))*/
 
+dio_filter_rat_solutions(solutions, final_transform):=block([sol,result:[],limit],
+  limit:apply(lcm,map(denom,apply(append,map(args,map(rhs,final_transform))))), /* lcm of denominators of terms of the transforms */
+  for sol in solutions do block([first:false, second:false,n],
+    for n:0 while n < limit and not integerp(second) do (
+      if integer_solution_p(ratsimp(subst(%n=n,sol))) then (
+        if not integerp(first) then first:n elseif not integerp(second) then second:n,
+        n:n+1)),
+    if integerp(first) then (
+      if not integerp(second) then error(I_didnt_think_this_could_happen)
+      else
+      push(subst(%n=(second-first)*%n+first,sol),result))),
+  result);
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
-  if d = 0 and e = 0 then
-    diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f)
-    elseif a=0 then diophantine_solve_hyperbolic(y,x,c,b,a,e,d,f)
-    elseif b#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_b_zero_transform)
-    elseif d#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_d_zero_transform)
-    elseif e#0 then dio_solve_with_transform(x,y,a,b,c,d,e,f,dio_make_e_zero_transform)
-    elseif abs(a)#1 and abs(c)#1 then dio_solve_with_transform(x,y,a,b,c,d,e,f, dio_make_a_one_transform)
-    else working_on_it);
+  if d = 0 and e = 0 then (
+    diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f))
+  else block([eq:a*x*x+b*x*y+c*y*y+d*x+e*y+f,transforms,new_eq,final_transform,transformed_eq,transformed_sols,eq_sols_rat],
+    transforms:diophantine_compute_transforms_to_pell(eq),
+    final_transform:dio_combine_transforms(transforms),
+    transformed_eq:expand(subst(final_transform,eq)),
+    transformed_sols:diophantine_solve(dio_make_coeffs_integer(transformed_eq)),
+    eq_sols_rat:map(lambda([s],ratsimp(subst(s,final_transform))),transformed_sols),
+    dio_filter_rat_solutions(eq_sols_rat, final_transform)));
 
 defstruct(pqa(pp,g,b,q));
 do_pqa(p,q,d):=block([result:dio_pqa(p,q,d)],

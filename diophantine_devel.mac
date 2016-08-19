@@ -49,6 +49,11 @@ diophantine_compute_transforms_to_pell(eq):=block([cur_eq:eq,transforms:[]],
   transform:dio_compute_transform_if(cur_eq,'a#1,dio_make_a_one_transform), cur_eq:expand(subst(transform, cur_eq)),
   if not emptyp(transform) then push(transform, transforms),
   transforms);
+dio_combine_transforms(transforms):=block([transforms:reverse(transforms),final,e],
+  final:first(transforms),
+  for e in rest(transforms) do
+  final:subst(e,final),
+  final);
 
 diophantine_apply_transforms(transforms, eq):=block([transform,new_eq:eq],
   for transform in reverse(transforms) do
