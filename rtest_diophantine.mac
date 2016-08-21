@@ -89,6 +89,87 @@ diophantine_solve(10*y^2-20*x*y-15);
 diophantine_solve(2*x^2-3*y^2=1);
 []$
 
+diophantine_solve(y^2+x*y-y-3*x^2+2*x+1);
+[[x = ((180*sqrt(13)+649)^(2*%n)*(238*sqrt(13)-858)
+           +(238*(649-180*sqrt(13))^(2*%n)+5)*sqrt(13)
+           +858*(649-180*sqrt(13))^(2*%n))
+           /13^(3/2),
+         y = -((86*sqrt(13)-310)*(180*sqrt(13)+649)^(2*%n)
+           -86*(649-180*sqrt(13))^(2*%n)*sqrt(13)
+           -310*(649-180*sqrt(13))^(2*%n)-4)
+           /13],
+        [x = -((180*sqrt(13)+649)^(2*%n+1)*(238*sqrt(13)+858)
+           +(238*(649-180*sqrt(13))^(2*%n+1)-5)*sqrt(13)
+           -858*(649-180*sqrt(13))^(2*%n+1))
+           /13^(3/2),
+         y = -((86*sqrt(13)+310)*(180*sqrt(13)+649)^(2*%n+1)
+           -86*(649-180*sqrt(13))^(2*%n+1)*sqrt(13)
+           +310*(649-180*sqrt(13))^(2*%n+1)-4)
+           /13],
+        [x = (4*(180*sqrt(13)+649)^(2*%n)+4*(649-180*sqrt(13))^(2*%n)+5)/13,
+         y = -((2*sqrt(13)+2)*(180*sqrt(13)+649)^(2*%n)
+           -2*(649-180*sqrt(13))^(2*%n)*sqrt(13)+2*(649-180*sqrt(13))^(2*%n)
+           -4)
+           /13],
+        [x = -((22*sqrt(13)+78)*(180*sqrt(13)+649)^(2*%n)
+           +(22*(649-180*sqrt(13))^(2*%n)-5)*sqrt(13)
+           -78*(649-180*sqrt(13))^(2*%n))
+           /13^(3/2),
+         y = -((8*sqrt(13)+28)*(180*sqrt(13)+649)^(2*%n)
+           -8*(649-180*sqrt(13))^(2*%n)*sqrt(13)+28*(649-180*sqrt(13))^(2*%n)
+           -4)
+           /13],
+        [x = -(4*(180*sqrt(13)+649)^(2*%n+1)+4*(649-180*sqrt(13))^(2*%n+1)-5)
+           /13,
+         y = -((2*sqrt(13)-2)*(180*sqrt(13)+649)^(2*%n+1)
+           -2*(649-180*sqrt(13))^(2*%n+1)*sqrt(13)
+           -2*(649-180*sqrt(13))^(2*%n+1)-4)
+           /13],
+        [x = ((22*sqrt(13)-78)*(180*sqrt(13)+649)^(2*%n+1)
+           +(22*(649-180*sqrt(13))^(2*%n+1)+5)*sqrt(13)
+           +78*(649-180*sqrt(13))^(2*%n+1))
+           /13^(3/2),
+         y = -((8*sqrt(13)-28)*(180*sqrt(13)+649)^(2*%n+1)
+           -8*(649-180*sqrt(13))^(2*%n+1)*sqrt(13)
+           -28*(649-180*sqrt(13))^(2*%n+1)-4)
+           /13]]$
+
+diophantine_solve(4*y^2-4*x*y-4*y-2*x^2+x-1);
+[[x = ((sqrt(3)+2)^(4*%n+1)*(2*sqrt(3)-9)
+           +(2*(2-sqrt(3))^(4*%n+1)-2)*sqrt(3)+9*(2-sqrt(3))^(4*%n+1))
+           /(4*3^(3/2)),
+         y = -((sqrt(3)+2)^(4*%n+1)*(sqrt(3)+7)
+           -(2-sqrt(3))^(4*%n+1)*sqrt(3)+7*(2-sqrt(3))^(4*%n+1)-10)
+           /24],
+        [x = -((sqrt(3)+2)^(4*%n)*(5*sqrt(3)-12)
+           +(5*(2-sqrt(3))^(4*%n)+2)*sqrt(3)+12*(2-sqrt(3))^(4*%n))
+           /(4*3^(3/2)),
+         y = -((sqrt(3)-7)*(sqrt(3)+2)^(4*%n)
+           -(2-sqrt(3))^(4*%n)*sqrt(3)-7*(2-sqrt(3))^(4*%n)-10)
+           /24]]$
+
+diophantine_solve(y^2-2*x*y-4*x^2+x);
+[[x = (2^((-12*%n)-2)*(2^(12*%n+1)-(sqrt(5)+1)^(12*%n)-(1-sqrt(5))^(12*%n)))
+    /5,
+  y = (2^((-12*%n)-2)*(2^(12*%n+1)+((-sqrt(5))-1)*(sqrt(5)+1)^(12*%n)
+                                  +(1-sqrt(5))^(12*%n)*sqrt(5)
+                                  -(1-sqrt(5))^(12*%n)))
+    /5],
+ [x = (2^((-2*(6*%n+3))-2)*(2^(2*(6*%n+3)+1)+(sqrt(5)+1)^(2*(6*%n+3))
+                                            +(1-sqrt(5))^(2*(6*%n+3))))
+    /5,
+  y = (2^((-2*(6*%n+3))-2)*(2^(2*(6*%n+3)+1)+(sqrt(5)+1)^(2*(6*%n+3)+1)
+                                            -(1-sqrt(5))^(2*(6*%n+3))*sqrt(5)
+                                            +(1-sqrt(5))^(2*(6*%n+3))))
+    /5]]$
+
+diophantine_solve(x^2+11*x*y-11*y^2-12*x-y-1);
+[]$
+
+diophantine_solve(x^2+10*x*y-11*y^2-12*x-y-1);
+[[x = -11,y = -12],[x = 143,y = -12]]$
+
+
 /* miscellaneous encountered problems */
 /* slow */
 diophantine_solve(14*y^2+90*x*y-82*y+3*x^2-25*x-26);
@@ -109,33 +190,13 @@ diophantine_solve(-2*y^2-x*y-4*y+2*x-2);
 diophantine_solve(x^2+2*y^2=16);
 [[x=-4,y=0],[x=4,y=0]]$
 
-/*crash? no, not immediately, but slow*/
-diophantine_solve(y^2+x*y-y-3*x^2+2*x+1);
-[]$
-
-/* duplicate answers ? and rational solutions, even though it's not hyperbolic */
+/* should be solved as 2 linears, but is handled by hyperbolic (degenerate case ?), not all solutions are generated */
 diophantine_solve(3*x^2+x*y-x);
 [[x=0,y=%n],[x=-%n,y=3*%n+1]]$
 
 /* recursive calls to diophantine_solve */
 diophantine_solve(-x^2+2*y^2+4)$
 []$
-
-
-/* interesting rationals */
-diophantine_solve(4*y^2-4*x*y-4*y-2*x^2+x-1);
-[]$
-
+/* some unhandled case when filtering out rational solutions */
 diophantine_solve((-2*y^2)+2*x*y-3*y+2*x^2+3*x-1);
-[]$
-
-diophantine_solve(y^2-2*x*y-4*x^2+x);
-[]$
-
-/* slow even though there are no solutions, and manual transform to pell finds that immediately */
-diophantine_solve(x^2+11*x*y-11*y^2-12*x-y-1);
-[]$
-
-/* does something silly (which is reserved for infinite solutions) even though there are just a finite number of solutions */
-diophantine_solve(x^2+10*x*y-11*y^2-12*x-y-1);
 []$
