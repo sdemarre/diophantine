@@ -31,32 +31,33 @@ diophantine_brute_force(eq,limit,[rest]):=block([coeffs:dio_coeffs(eq),vars:list
   sln:map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit]))),
   if member('sorted,rest) then sort(sln,dio_solution_magnitude_less_p) else sln);
 
-dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coeffs:dio_coeffs(eq),t],
+dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coeffs:dio_coeffs(eq),expr],
   if is(subst(coeffs,condition)) then (
-    t:subst(coeffs,'apply(transform,[vars[1],vars[2],a,b,c,d,e,f])),
-    ev(t,nouns))
+    expr:subst(coeffs,'transform(vars[1],vars[2],'a,'b,'c,'d,'e,'f)),
+    ev(expr,nouns))
   else
     []);
 
 dio_make_coeffs_integer(eq):=expand(lcm(map(denom,map(rhs,dio_coeffs(eq))))*eq);
-diophantine_compute_transforms_to_pell(eq):=block([cur_eq:eq,transforms:[]],
-  transform:dio_compute_transform_if(cur_eq,'b#0,dio_make_b_zero_transform), cur_eq:expand(subst(transform, cur_eq)),
-  if not emptyp(transform) then push(transform, transforms), cur_eq:dio_make_coeffs_integer(cur_eq),
-  transform:dio_compute_transform_if(cur_eq,'d#0,dio_make_d_zero_transform), cur_eq:expand(subst(transform, cur_eq)),
-  if not emptyp(transform) then push(transform, transforms), cur_eq:dio_make_coeffs_integer(cur_eq),
-  transform:dio_compute_transform_if(cur_eq,'e#0,dio_make_e_zero_transform), cur_eq:expand(subst(transform, cur_eq)),
-  if not emptyp(transform) then push(transform, transforms), cur_eq:dio_make_coeffs_integer(cur_eq),
-  transform:dio_compute_transform_if(cur_eq,'a#1,dio_make_a_one_transform), cur_eq:expand(subst(transform, cur_eq)),
+/* I think this only works for hyperbolic case */
+diophantine_compute_transforms_to_pell(eq):=block([cur_eq:eq,transforms:[],transform:[]],
+  transform:dio_compute_transform_if(cur_eq,'b#0,dio_make_b_zero_transform), cur_eq:dio_make_coeffs_integer(expand(subst(transform, cur_eq))),
   if not emptyp(transform) then push(transform, transforms),
-  transforms);
-dio_combine_transforms(transforms):=block([transforms:reverse(transforms),final,e],
+  transform:dio_compute_transform_if(cur_eq,'d#0,dio_make_d_zero_transform), cur_eq:dio_make_coeffs_integer(expand(subst(transform, cur_eq))),
+  if not emptyp(transform) then push(transform, transforms),
+  transform:dio_compute_transform_if(cur_eq,'e#0,dio_make_e_zero_transform), cur_eq:dio_make_coeffs_integer(expand(subst(transform, cur_eq))),
+  if not emptyp(transform) then push(transform, transforms),
+  transform:dio_compute_transform_if(cur_eq,'a#1,dio_make_a_one_transform), cur_eq:dio_make_coeffs_integer(expand(subst(transform, cur_eq))),
+  if not emptyp(transform) then push(transform, transforms),
+  reverse(transforms));
+dio_combine_transforms(transforms):=block([final,e],
   final:first(transforms),
   for e in rest(transforms) do
   final:subst(e,final),
   final);
 
 diophantine_apply_transforms(transforms, eq):=block([transform,new_eq:eq],
-  for transform in reverse(transforms) do
+  for transform in transforms do
   new_eq:subst(transform,new_eq),
   new_eq);
 
