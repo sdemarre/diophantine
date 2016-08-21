@@ -192,7 +192,8 @@ dio_solve_with_transform(x,y,a,b,c,d,e,f,trfunc):=block([tr_eq,tr_eq_sol,tr,resu
   tr_eq_sol:diophantine_solve(expand(tr_eq)),
   result:map(lambda([s],subst(s,tr)),tr_eq_sol),
   if dio_infinite_solutions(result) then result else remove_rat_sols(result));
-dio_make_b_zero_transform(x,y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2,X:gensym("X"),Y:gensym("Y")],
+dio_make_b_zero_transform(x,y,a,b,c,d,e,f):=if a=0 then dio_make_b_zero_transform(y,x,c,b,a,e,d,f) else
+block([A,B,C,T,e1,e2,X:gensym("X"),Y:gensym("Y")],
   e1:2*a/b, B:ratnum(e1), C:denom(e1),
   e2:a/B^2, A:ratnum(e2), T:denom(e2),
   [x=1/B*X-C/B*Y,y=Y]);
