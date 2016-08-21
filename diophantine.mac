@@ -208,7 +208,8 @@ dio_apply_transform(eq,transform_name):=block([vars:listofvars(eq),coeffs:map(rh
   new_eq:expand(subst(transform,eq)));  /*,
   expand(apply(lcm,map(rhs,dio_coeffs(new_eq))))*/
 
-dio_filter_rat_solutions(solutions, final_transform):=block([sol,result:[],limit],
+dio_filter_rat_solutions(solutions, final_transform):=if not dio_infinite_solutions(solutions) then remove_rat_sols(solutions) else
+block([sol,result:[],limit],
   limit:apply(lcm,map(denom,apply(append,map(args,map(rhs,final_transform))))), /* lcm of denominators of terms of the transforms */
   for sol in solutions do block([first:false, second:false,n],
     for n:0 while n < limit and not integerp(second) do (
