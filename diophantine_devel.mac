@@ -1,4 +1,3 @@
-load(diophantine_draw);
 dio_trace():=trace(dio_all_pell_solutions,
   dio_gen_euclid,
   dio_make_b_zero_transform, dio_make_d_zero_transform, dio_make_a_one_transform,

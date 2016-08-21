@@ -15,7 +15,6 @@ dio_error_not_implemented:"Can't solve this type of diophantine equation (yet?)"
 /* a*x^2 + b*x*y + c*y^2 + d*x + e*y + f */
 
 load(to_poly_solve);
-load(dio_lisp_helpers);
 load(functs);
 
 dio_gensym():='%n;
