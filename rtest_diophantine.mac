@@ -200,3 +200,7 @@ diophantine_solve(-x^2+2*y^2+4)$
 /* some unhandled case when filtering out rational solutions */
 diophantine_solve((-2*y^2)+2*x*y-3*y+2*x^2+3*x-1);
 []$
+
+/* rational solutions, why? */
+diophantine_solve(3*x*x-2*x*y-7*y*y=12);
+[]$
