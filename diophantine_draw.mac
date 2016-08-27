@@ -1,5 +1,5 @@
 load(draw);
-if  not is(using_asdf_loading='using_asdf_loading) then  load(diophantine);
+if is(using_asdf_loading='using_asdf_loading) then load(diophantine);
 
 dio_make_points_data(dio_points_result):=block(
   map(lambda([p],[rhs(p[1]),rhs(p[2])]), dio_points_result));
