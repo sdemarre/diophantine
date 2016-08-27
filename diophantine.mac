@@ -18,7 +18,9 @@ load(to_poly_solve);
 load(dio_lisp_helpers);
 load(functs);
 
-dio_gensym():='%n;
+dio_gensym():=if is(dio_solution_parameter='dio_solution_parameter) then (
+  dio_solution_parameter:new_variable('integer),dio_solution_parameter)
+else dio_solution_parameter;
 
 diophantine_solve_single_var(dio_eq):=block([sols:solve(dio_eq),result:[]],
   for sol in sols do if integerp(rhs(sol)) then push([sol],result),
