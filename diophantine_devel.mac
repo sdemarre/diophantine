@@ -1,15 +1,47 @@
 if is(using_asdf_loading='using_asdf_loading) then load(diophantine_draw);
 dio_trace():=trace(dio_all_pell_solutions,
+  dio_apply_transform,
+  dio_coeffs,
+  dio_combine_transforms,
+  dio_compute_transform_if,
+  dio_filter_rat_solutions,
   dio_gen_euclid,
-  dio_make_b_zero_transform, dio_make_d_zero_transform, dio_make_a_one_transform,
+  dio_infinite_solutions,
+  dio_integer_expressions,
+  dio_lmm,
+  dio_make_a_one_transform,
+  dio_make_b_zero_transform,
+  dio_make_coeffs_integer,
+  dio_make_d_zero_transform,
+  dio_make_e_zero_transform,
+  dio_min_pos_pell_solution,
+  dio_min_pos_pell_solution_1,
+  dio_min_pos_pell_solution_4,
+  dio_reset_vars,
+  dio_solution_magnitude_less_p,
   dio_solve_with_transform,
-  diophantine_solve_linear,
-  diophantine_solve_simple_hyperbolic,
+  dio_subst,
+  diophantine_apply_transforms,
+  diophantine_compute_transforms_to_pell,
+  diophantine_instantiate_solutions,
+  diophantine_solve,
+  diophantine_solve1,
   diophantine_solve_elliptic,
-  diophantine_solve_parabolic,
-  diophantine_solve_hyperbolic_homogenous,
   diophantine_solve_hyperbolic,
-  diophantine_solve);
+  diophantine_solve_hyperbolic_homogenous,
+  diophantine_solve_linear,
+  diophantine_solve_parabolic,
+  diophantine_solve_simple_hyperbolic,
+  diophantine_solve_single_var,
+  do_pqa,
+  find_eq_with_powers,
+  make_a_one,
+  make_b_zero,
+  make_d_zero,
+  make_e_zero,
+  perfect_squarep,
+  remove_rat_sols(s),
+  square_divisors);
 
 dio_rand(n):=random(n)-floor(n/2);
 
@@ -80,4 +112,4 @@ find_eq_with_powers():=block([eq:dio_random_eq(10),s,M],
   else [eq,not_interesting]);
 
 
-/* remove_if(lambda([d],d[2]=not_interesting),makelist(find_eq_with_powers(),i,0,20)); */
+dio_test():=block([dt:display2d],display2d:false,batch(rtest_diophantine,test),display2d:dt);
