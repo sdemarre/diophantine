@@ -112,4 +112,4 @@ find_eq_with_powers():=block([eq:dio_random_eq(10),s,M],
   else [eq,not_interesting]);
 
 
-dio_test():=block([dt:display2d],display2d:false,batch(rtest_diophantine,test),display2d:dt);
+dio_test():=block([dt:display2d,result],display2d:false,result:batch(rtest_diophantine,test),display2d:dt,result);

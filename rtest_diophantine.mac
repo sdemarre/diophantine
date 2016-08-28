@@ -195,9 +195,7 @@ diophantine_solve(-2*y^2-x*y-4*y+2*x-2);
  [x = -25,y = 4],[x = -24,y = 5],[x = 0,y = -1],[x = 1,y = 0],[x = 3,y = -4],
  [x = 8,y = -7],[x = 8,y = 1],[x = 25,y = -16]]$
 
-
-
-/* THESE ARE EXPECTED TO FAIL !!!!! */
+/* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
 
 /* duplicate solutions, due to y=+-0 */
 diophantine_solve(x^2+2*y^2=16);
