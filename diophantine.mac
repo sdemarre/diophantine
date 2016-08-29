@@ -211,17 +211,17 @@ dio_apply_transform(eq,transform_name):=block([vars:listofvars(eq),coeffs:map(rh
   expand(apply(lcm,map(rhs,dio_coeffs(new_eq))))*/
 
 dio_filter_rat_solutions(solutions, final_transform):=if not dio_infinite_solutions(solutions) then remove_rat_sols(solutions) else
-block([sol,result:[],limit],
+block([sol,result:[],limit,param:dio_gensym()],
   limit:apply(lcm,map(denom,apply(append,map(args,map(rhs,final_transform))))), /* lcm of denominators of terms of the transforms */
   for sol in solutions do block([first:false, second:false,n],
     for n:0 while n < limit and not integerp(second) do (
-      if integer_solution_p(ratsimp(subst(%n=n,sol))) then (
+      if integer_solution_p(ratsimp(subst(param=n,sol))) then (
         if not integerp(first) then first:n elseif not integerp(second) then second:n,
         n:n+1)),
     if integerp(first) then (
       if not integerp(second) then error(I_didnt_think_this_could_happen)
       else
-      push(subst(%n=(second-first)*%n+first,sol),result))),
+      push(subst(param=(second-first)*param+first,sol),result))),
   result);
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then (
@@ -289,7 +289,7 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
 dio_solution_magnitude_less_p(s1,s2):=rhs(s1[1])^2+rhs(s1[2])^2 < rhs(s2[1])^2+rhs(s2[2])^2;
 
 diophantine_instantiate_solutions(parametrised_results, nmin, nmax,[rest]):=
-block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(%n=i,param_result),i,nmin,nmax)), parametrised_results)))],
+block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(dio_gensym()=i,param_result),i,nmin,nmax)), parametrised_results)))],
   if member('sorted,rest) then
     result_list:sort(result_list,dio_solution_magnitude_less_p),
   if member('integer,rest) then
