@@ -298,6 +298,36 @@ block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst
     result_list:map(lambda([s],[rhs(s[1]),rhs(s[2])]),result_list),
   result_list);
 
+diophantine_brute_force(eq,limit,[rest]):=block([coeffs:dio_coeffs(eq),vars:listofvars(eq),sln],
+  sln:map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit]))),
+  if member('sorted,rest) then sort(sln,dio_solution_magnitude_less_p) else sln);
+
+dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coeffs:dio_coeffs(eq),expr],
+  if is(subst(coeffs,condition)) then (
+    expr:subst(coeffs,'transform(vars[1],vars[2],'a,'b,'c,'d,'e,'f)),
+    ev(expr,nouns))
+  else
+    []);
+
+dio_make_coeffs_integer(eq):=expand(lcm(map(denom,map(rhs,dio_coeffs(eq))))*eq);
+/* I think this only works for hyperbolic case */
+diophantine_compute_transforms_to_pell(eq):=block([cur_eq:eq,transforms:[],transform:[]],
+  transform:dio_compute_transform_if(cur_eq,'b#0,dio_make_b_zero_transform), cur_eq:dio_make_coeffs_integer(expand(subst(transform, cur_eq))),
+  if not emptyp(transform) then push(transform, transforms),
+  transform:dio_compute_transform_if(cur_eq,'d#0,dio_make_d_zero_transform), cur_eq:dio_make_coeffs_integer(expand(subst(transform, cur_eq))),
+  if not emptyp(transform) then push(transform, transforms),
+  transform:dio_compute_transform_if(cur_eq,'e#0,dio_make_e_zero_transform), cur_eq:dio_make_coeffs_integer(expand(subst(transform, cur_eq))),
+  if not emptyp(transform) then push(transform, transforms),
+  transform:dio_compute_transform_if(cur_eq,'a#1,dio_make_a_one_transform), cur_eq:dio_make_coeffs_integer(expand(subst(transform, cur_eq))),
+  if not emptyp(transform) then push(transform, transforms),
+  reverse(transforms));
+dio_combine_transforms(transforms):=block([final,e],
+  final:first(transforms),
+  for e in rest(transforms) do
+  final:subst(e,final),
+  final);
+
+
 diophantine_solve(dio_eq) := nested_sort(diophantine_solve1(dio_eq));
 
 nested_sort (l) :=
