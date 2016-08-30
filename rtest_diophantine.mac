@@ -183,6 +183,26 @@ ratsimp(diophantine_solve(-x^2+2*y^2+4))$
           y = ((2^(5/2)+6)^''%param-(6-2^(5/2))^''%param)*2^((-''%param)-1/2)]]))$
 
 
+ratsimp(diophantine_solve((-2*y^2)+2*x*y-3*y+2*x^2+3*x-1));
+''(ratsimp([[x = -(2^((-12*%z1)-2)*(3*2^(12*%z1+1)+((-sqrt(5))-3)*(sqrt(5)+1)^(12*%z1)
+                                       +(1-sqrt(5))^(12*%z1)*sqrt(5)
+                                       -3*(1-sqrt(5))^(12*%z1)))
+    /5,
+  y = -(2^((-12*%z1)-2)*(9*2^(12*%z1+1)+(sqrt(5)+1)^(12*%z1+1)
+                                       -(1-sqrt(5))^(12*%z1)*sqrt(5)
+                                       +(1-sqrt(5))^(12*%z1)))
+    /5],
+ [x = -(2^((-2*(6*%z1+3))-2)*(3*2^(2*(6*%z1+3)+1)
+                             +(sqrt(5)+1)^(2*(6*%z1+3))*(sqrt(5)+3)
+                             -(1-sqrt(5))^(2*(6*%z1+3))*sqrt(5)
+                             +3*(1-sqrt(5))^(2*(6*%z1+3))))
+    /5,
+  y = -(2^((-2*(6*%z1+3))-2)*(9*2^(2*(6*%z1+3)+1)
+                             +((-sqrt(5))-1)*(sqrt(5)+1)^(2*(6*%z1+3))
+                             +(1-sqrt(5))^(2*(6*%z1+3))*sqrt(5)
+                             -(1-sqrt(5))^(2*(6*%z1+3))))
+    /5]]))$
+
 /* miscellaneous encountered problems */
 
 /* very very slow */
@@ -204,12 +224,11 @@ diophantine_solve(x^2+2*y^2=16);
 diophantine_solve(3*x^2+x*y-x);
 [[x=0,y=''%param],[x=-''%param,y=3*''%param+1]]$
 
-/* some unhandled case when filtering out rational solutions */
-diophantine_solve((-2*y^2)+2*x*y-3*y+2*x^2+3*x-1);
-[]$
 /* rational solutions, why? */
 diophantine_solve(3*x*x-2*x*y-7*y*y=12);
 []$
 
+
+/* doesn't find all solutions !? arghghghg */
 diophantine_solve(9*y^2-4*x*y+9*y-10*x^2-10*x-6);
 []$

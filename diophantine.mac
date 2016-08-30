@@ -212,7 +212,7 @@ dio_apply_transform(eq,transform_name):=block([vars:listofvars(eq),coeffs:map(rh
 
 dio_filter_rat_solutions(solutions, final_transform):=if not dio_infinite_solutions(solutions) then remove_rat_sols(solutions) else
 block([sol,result:[],limit,param:dio_gensym()],
-  limit:apply(lcm,map(denom,apply(append,map(args,map(rhs,final_transform))))), /* lcm of denominators of terms of the transforms */
+  limit:apply(lcm,map(denom,map(rhs,final_transform))), /* lcm of denominators of terms of the transforms */
   for sol in solutions do block([first:false, second:false,n],
     for n:0 while n < limit and not integerp(second) do (
       if integer_solution_p(ratsimp(subst(param=n,sol))) then (
