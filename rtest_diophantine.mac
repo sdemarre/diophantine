@@ -274,6 +274,9 @@ ratsimp(diophantine_solve(3*x*x-2*x*y-7*y*y=12));
     +4*(197-42*sqrt(22))^%z1*sqrt(22)-19*(197-42*sqrt(22))^%z1)
     /sqrt(22)]]))$
 
+/* slow, 588 seconds on i7 6700k */
+/* diophantine_solve(14*y^2-9*x*y-6*y-15*x^2-15*x-11); */
+
 /* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
 
 /* duplicate solutions, due to y=+-0 */
@@ -283,5 +286,3 @@ diophantine_solve(x^2+2*y^2=16);
 /* should be solved as 2 linears, but is handled by hyperbolic (degenerate case ?), not all solutions are generated */
 diophantine_solve(3*x^2+x*y-x);
 [[x=0,y=''%param],[x=-''%param,y=3*''%param+1]]$
-
-
