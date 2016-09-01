@@ -40,7 +40,7 @@ dio_trace():=trace(dio_all_pell_solutions,
   make_d_zero,
   make_e_zero,
   perfect_squarep,
-  remove_rat_sols(s),
+  remove_rat_sols,
   square_divisors);
 
 dio_rand(n):=random(n)-floor(n/2);
