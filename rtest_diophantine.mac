@@ -248,6 +248,32 @@ diophantine_solve(-2*y^2-x*y-4*y+2*x-2);
  [x = -25,y = 4],[x = -24,y = 5],[x = 0,y = -1],[x = 1,y = 0],[x = 3,y = -4],
  [x = 8,y = -7],[x = 8,y = 1],[x = 25,y = -16]]$
 
+ratsimp(diophantine_solve(3*x*x-2*x*y-7*y*y=12));
+''(ratsimp([[x = ((42*sqrt(22)+197)^%z1*(155*sqrt(22)-727)
+    +155*(197-42*sqrt(22))^%z1*sqrt(22)+727*(197-42*sqrt(22))^%z1)
+    /sqrt(22),
+  y = -((42*sqrt(22)+197)^%z1*(126*sqrt(22)-591)
+    +126*(197-42*sqrt(22))^%z1*sqrt(22)+591*(197-42*sqrt(22))^%z1)
+    /sqrt(22)],
+ [x = -((42*sqrt(22)+197)^%z1*(155*sqrt(22)+727)
+    +155*(197-42*sqrt(22))^%z1*sqrt(22)-727*(197-42*sqrt(22))^%z1)
+    /sqrt(22),
+  y = ((42*sqrt(22)+197)^%z1*(126*sqrt(22)+591)
+    +126*(197-42*sqrt(22))^%z1*sqrt(22)-591*(197-42*sqrt(22))^%z1)
+    /sqrt(22)],
+ [x = ((5*sqrt(22)-23)*(42*sqrt(22)+197)^%z1
+    +5*(197-42*sqrt(22))^%z1*sqrt(22)+23*(197-42*sqrt(22))^%z1)
+    /sqrt(22),
+  y = -((4*sqrt(22)-19)*(42*sqrt(22)+197)^%z1
+    +4*(197-42*sqrt(22))^%z1*sqrt(22)+19*(197-42*sqrt(22))^%z1)
+    /sqrt(22)],
+ [x = -((5*sqrt(22)+23)*(42*sqrt(22)+197)^%z1
+    +5*(197-42*sqrt(22))^%z1*sqrt(22)-23*(197-42*sqrt(22))^%z1)
+    /sqrt(22),
+  y = ((4*sqrt(22)+19)*(42*sqrt(22)+197)^%z1
+    +4*(197-42*sqrt(22))^%z1*sqrt(22)-19*(197-42*sqrt(22))^%z1)
+    /sqrt(22)]]))$
+
 /* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
 
 /* duplicate solutions, due to y=+-0 */
@@ -257,9 +283,5 @@ diophantine_solve(x^2+2*y^2=16);
 /* should be solved as 2 linears, but is handled by hyperbolic (degenerate case ?), not all solutions are generated */
 diophantine_solve(3*x^2+x*y-x);
 [[x=0,y=''%param],[x=-''%param,y=3*''%param+1]]$
-
-/* rational solutions, why? */
-diophantine_solve(3*x*x-2*x*y-7*y*y=12);
-[]$
 
 
