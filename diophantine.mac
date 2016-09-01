@@ -216,8 +216,7 @@ block([sol,result:[],limit,param:dio_gensym()],
   for sol in solutions do block([first:false, second:false,n],
     for n:0 while n < limit and not integerp(second) do (
       if integer_solution_p(ratsimp(subst(param=n,sol))) then (
-        if not integerp(first) then first:n elseif not integerp(second) then second:n,
-        n:n+1)),
+        if not integerp(first) then first:n elseif not integerp(second) then second:n)),
     if integerp(first) then (
       if not integerp(second) then error(I_didnt_think_this_could_happen)
       else
