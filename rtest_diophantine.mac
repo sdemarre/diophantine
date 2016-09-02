@@ -239,9 +239,6 @@ ratsimp(diophantine_solve(9*y^2-4*x*y+9*y-10*x^2-10*x-6));
 
 /* miscellaneous encountered problems */
 
-/* very very slow */
-/*diophantine_solve(-55*y^2-29*x*y-60*y+24*x^2-54*x+85);
-[]$*/
 
 diophantine_solve(-2*y^2-x*y-4*y+2*x-2);
 [[x = -49,y = 20],[x = -32,y = 3],[x = -32,y = 11],[x = -27,y = 8],
@@ -274,8 +271,13 @@ ratsimp(diophantine_solve(3*x*x-2*x*y-7*y*y=12));
     +4*(197-42*sqrt(22))^%z1*sqrt(22)-19*(197-42*sqrt(22))^%z1)
     /sqrt(22)]]))$
 
-/* slow, 588 seconds on i7 6700k */
+/* slow, 588 seconds on xeon E5-1620v3@3.5GHz */
 /* diophantine_solve(14*y^2-9*x*y-6*y-15*x^2-15*x-11); */
+
+/* very very slow, while computing fundamental solutions of equivalent pell equation,
+needs about 820 seconds to figure out there are no solutions on xeon E5-1620v3@3.5GHz */
+/*diophantine_solve(-55*y^2-29*x*y-60*y+24*x^2-54*x+85);
+[]$*/
 
 /* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
 
