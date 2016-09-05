@@ -288,3 +288,7 @@ diophantine_solve(x^2+2*y^2=16);
 /* should be solved as 2 linears, but is handled by hyperbolic (degenerate case ?), not all solutions are generated */
 diophantine_solve(3*x^2+x*y-x);
 [[x=0,y=''%param],[x=-''%param,y=3*''%param+1]]$
+
+/* problem when trying to filter out rational solutions after solving with transformation */
+diophantine_solve(9*Y^2+42*Y-425*X^2+5100*X-15226);
+[];

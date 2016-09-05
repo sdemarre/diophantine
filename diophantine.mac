@@ -219,7 +219,7 @@ block([sol,result:[],limit,param:dio_gensym()],
       if integer_solution_p(ratsimp(subst(param=n,sol))) then (
         if not integerp(first) then first:n elseif not integerp(second) then second:n)),
     if integerp(first) then (
-      if not integerp(second) then error(I_didnt_think_this_could_happen)
+      if not integerp(second) then push(sol,result) /* error(I_didnt_think_this_could_happen) */
       else
       push(subst(param=(second-first)*param+first,sol),result))),
   result);
