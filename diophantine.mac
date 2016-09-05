@@ -299,7 +299,7 @@ block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst
   result_list);
 
 diophantine_brute_force(eq,limit,[rest]):=block([coeffs:dio_coeffs(eq),vars:listofvars(eq),sln],
-  sln:map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit]))),
+  sln:map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit], if member('positive,rest) then [true] else []))),
   if member('sorted,rest) then sort(sln,dio_solution_magnitude_less_p) else sln);
 
 dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coeffs:dio_coeffs(eq),expr],
