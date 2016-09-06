@@ -69,15 +69,19 @@ diophantine_solve_simple_hyperbolic(x, y, b, d, e, f):=block(
       dio_integer_expressions(x = (-v-e)/b, y = ((-d*e+b*f)/v-d)/b, [v, divs]))));
 
 diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*c)*x^2+2*(b*e-2*c*d)*x+(e^2-4*c*f),x), iroots],
-  if length(roots) < 2 then return([]),
-  iroots:map(rhs,roots),
-  if not (isreal_p(iroots[1]) and isreal_p(iroots[2])) then return([]),
-  iroots:map(truncate,iroots),
-  if iroots[1] > iroots[2] then iroots:[iroots[2],iroots[1]],
-  block([roots:makelist(i,i,iroots[1],iroots[2]), v],
-    append(
-      dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]),
-      dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]))));
+  if length(roots) = 0 then return([])
+  else block([roots:if length(roots)=1 then [roots[1],roots[1]] else roots],
+    iroots:map(rhs,roots),
+    if not (isreal_p(iroots[1]) and isreal_p(iroots[2])) then return([]),
+    iroots:map(truncate,iroots),
+    if iroots[1] > iroots[2] then iroots:[iroots[2],iroots[1]],
+    block([roots:makelist(i,i,iroots[1],iroots[2]), v],
+      if iroots[1]=iroots[2] then
+      dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots])
+      else
+      append(
+        dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]),
+        dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots])))));
 
 diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qcdqae],
   ag:abs(a/g),

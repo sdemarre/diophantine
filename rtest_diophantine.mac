@@ -272,6 +272,12 @@ ratsimp(diophantine_solve(3*x*x-2*x*y-7*y*y=12));
     /sqrt(22)]]))$
 
 /* slow, 588 seconds on xeon E5-1620v3@3.5GHz */
+
+/* bugs found by looking into examples from sympy 1.0.1 */
+diophantine_solve(x**2 + y**2 + 2*x + 2*y + 2);
+[[x=-1,y=-1]]$
+
+/* slow, 588 seconds on xeon E5-1620v3@3.5GHz, 1144 on core2quad@2.83GHz */
 /* diophantine_solve(14*y^2-9*x*y-6*y-15*x^2-15*x-11); */
 
 /* very very slow, while computing fundamental solutions of equivalent pell equation,
