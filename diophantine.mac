@@ -308,8 +308,7 @@ diophantine_brute_force(eq,limit,[rest]):=block([coeffs:dio_coeffs(eq),vars:list
 
 dio_compute_transform_if(eq,condition,transform):=block([vars:listofvars(eq),coeffs:dio_coeffs(eq),expr],
   if is(subst(coeffs,condition)) then (
-    expr:subst(coeffs,'transform(vars[1],vars[2],'a,'b,'c,'d,'e,'f)),
-    ev(expr,nouns))
+    apply(transform,append(vars,map(rhs,coeffs))))
   else
     []);
 
