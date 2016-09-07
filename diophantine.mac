@@ -330,6 +330,8 @@ dio_combine_transforms(transforms):=block([final,e],
   final:subst(e,final),
   final);
 
+diophantine_swap_vars(eq):=block([vars:listofvars(eq),tempvar:gensym()],
+  subst(tempvar=vars[2],subst(vars[2]=vars[1],subst(vars[1]=tempvar,eq))));
 
 diophantine_solve(dio_eq) := nested_sort(diophantine_solve1(dio_eq));
 
