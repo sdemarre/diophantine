@@ -280,10 +280,10 @@ diophantine_solve(x**2 + y**2 + 2*x + 2*y + 2);
 /* slow, 588 seconds on xeon E5-1620v3@3.5GHz, 1144 on core2quad@2.83GHz */
 /* diophantine_solve(14*y^2-9*x*y-6*y-15*x^2-15*x-11); */
 
-/* very very slow, while computing fundamental solutions of equivalent pell equation,
-needs about 820 seconds to figure out there are no solutions on xeon E5-1620v3@3.5GHz */
-/*diophantine_solve(-55*y^2-29*x*y-60*y+24*x^2-54*x+85);
-[]$*/
+/* lots of work in dio_lmm, used to be  slow (820 seconds to figure out there are no solutions on xeon E5-1620v3@3.5GHz) */
+/* lisp rewrite of dio_lmm improved performance considerably (4 seconds on core2quad@2.83GHz */
+diophantine_solve(-55*y^2-29*x*y-60*y+24*x^2-54*x+85);
+[]$
 
 /* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
 

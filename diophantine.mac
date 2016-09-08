@@ -105,36 +105,6 @@ diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,
         push([x = xv, y = yv], result))),
           reverse(result)));
 
-square_divisors(N):=block([result:[]],
-  for f:1 thru isqrt(N) do
-  if mod(N,f^2) = 0 then push(f,result),
-  reverse(result));
-
-/* lmm as described in "Solving the generalized Pell equation" 2004 by John P. Robertson, http://www.jpr2718.org/pell.pdf */
-dio_lmm(x,y,D,N):=block([result:[]],
-  for f in square_divisors(N) do block([m:N/f^2],
-    /*print(['f=f,'m=m]),*/
-    for z:truncate(-abs(m)/2) thru truncate(abs(m)/2) do
-    block([],
-      /*print('z=z,'mod(z^2,abs(m))=mod(z^2,abs(m)),'mod(D,abs(m))=mod(D,abs(m))),*/
-      if mod(z^2,abs(m)) = mod(D,abs(m)) then block([pqa:do_pqa(z,abs(m),D),qi,i:1,r,s,found:false],
-        /*print('pqa=pqa),*/
-        for qi in rest(pqa@q) do block([],
-          i:i+1,
-          if not found and abs(qi)=1 then block([],
-            found:true,
-            r:pqa@g[i-1],
-            s:pqa@b[i-1],
-            if r^2-D*s^2=m then block([],
-              /*print([adding,['r=r,'s=s]]),*/
-              push([x=f*r,y=f*s],result))
-            else block([t,u,sols],
-              sols:dio_min_pos_pell_solution(t,u,D,-1),
-              if not length(sols)=0 then block([],
-                /*print('sols=sols,'r=r),*/
-                push(subst(sols,[x=f*(r*t+s*u*D),y=f*(r*u+s*t)]),result)))))))),
-  result);
-
 diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
   if a = 0 then
   diophantine_solve_hyperbolic_homogenous(y,x,c,b,a,f)
