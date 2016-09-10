@@ -93,9 +93,10 @@ diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,
   qcdqae:qc*d-qa*e,
   if qcdqae = 0 then block([u,usols],
     usols:solve(qa*g*u^2+d*u+qa*f,u),
-    block([result:[],u1:-rhs(usols[1]),u2:-rhs(usols[2])],
-      if integerp(u1) then push(diophantine_solve_linear(x, y, qa, qc, u1)[1], result),
-      if integerp(u2) then push(diophantine_solve_linear(x, y, qa, qc, u2)[1], result),
+    block([result:[]],
+      for us in usols do block([u:-rhs(us)],
+        if integerp(u) then block([ps:diophantine_solve_linear(x,y,qa,qc,u)],
+          if not emptyp(ps) then push(ps[1], result))),
       result))
   else block([un:abs(qcdqae),u,result:[]],
     for u:0 thru un do block(
