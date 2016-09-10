@@ -16,6 +16,11 @@ Put the source in some folder, and in maxima do the following:
 
 Putting these lines in your maxima-init.mac saves you from having to type this in every new maxima session.
 
+Alternatively, if you're using Robert Dodier's [asdf loader](https://github.com/robert-dodier/maxima-asdf), you can do the following:
+
+	(%i1) install_github("sdemarre", "diophantine", "master")$
+	(%i2) asdf_load_source("diophantine")$
+
 ## Usage
 
 	(%i1) load(diophantine)$
@@ -39,7 +44,7 @@ Generating some specific values when the solution contains %z1 can be done like 
 
 ## Limitations
 
-The test file (rtest_diophantine.mac) contains possibly interesting examples. At the end of that file, you will find examples that show the following issues:
+The test file (rtest_diophantine.mac) contains possibly interesting examples and examples that show the following issues:
     * Some solutions show up more than once in the set of solutions (both for equations with finite and infinite solutions).
     * Even apparently simple equations can take a very long time to solve.
 
@@ -68,3 +73,6 @@ There is a file with tests available, run it like this:
 
 ![Graphical example 4](dio_draw_example4.png)
 
+In general, you can use dio_draw() to draw the equation with (some of) its solutions:
+
+	(%i17) dio_draw(x^2-7*y^2=-3);
