@@ -52,7 +52,7 @@ The test file (rtest_diophantine.mac) contains possibly interesting examples and
 
 There is a file with tests available, run it like this:
 
-	(%i6) batch(rtest_diophantine);
+	(%i6) batch(rtest_diophantine, test);
 
 ## Graphical examples:
 
