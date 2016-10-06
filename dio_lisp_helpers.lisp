@@ -116,7 +116,7 @@
 	 (let* ((m (/ n (* f f)))
 		(absm (abs m))
 		(limit (/ absm 2)))
-	   (loop for z from (truncate (- limit)) to (truncate limit) do
+	   (loop for z from (1+ (truncate (- limit))) to (1+ (truncate limit)) do
 		(when (= (mod (* z z) absm) (mod d absm))
 		  (let ((pqa ($dio_pqa z absm d))
 			(found nil))
