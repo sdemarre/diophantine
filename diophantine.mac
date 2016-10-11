@@ -315,6 +315,9 @@ diophantine_transform_to_pell(eq):=block([transforms, final_transform, transform
 dio_all_pell_solutions2(x,y,D,N):=block([p:subst(dio_min_pos_pell_solution(x,y,D,1),[x+sqrt(D)*y,x-sqrt(D)*y]),lmm:dio_lmm(x,y,D,N),l],
   map(lambda([s],[x=(s[1]+s[2])/2,y=(s[1]-s[2])/2/sqrt(D)]),makelist([p[1]^dio_gensym()*subst(l,x+sqrt(D)*y),p[2]^dio_gensym()*subst(l,x-sqrt(D)*y)],l,lmm)));
 
+dio_pell_int_solution_arrays(x,y,D,N,k,L):=block([p:map(rhs,dio_min_pos_pell_solution(x,y,D,1)),lmm:map(lambda([s],map(rhs,s)),dio_lmm(x,y,D,N)),l],
+  makelist(?dio_integer_pell_array(p[1],p[2],l[1],l[2],D,k,L),l,lmm));
+
 diophantine_swap_vars(eq):=block([vars:listofvars(eq),tempvar:gensym()],
   subst(tempvar=vars[2],subst(vars[2]=vars[1],subst(vars[1]=tempvar,eq))));
 

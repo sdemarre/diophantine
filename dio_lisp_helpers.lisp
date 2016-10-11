@@ -139,3 +139,17 @@
 						  (list '(mequal simp) y (* f (+ (* r w) (* s v)))))
 					    result))))))))))))
     (cons '(mlist simp) result)))
+
+
+(defun dio_integer_pell_array (px py lx ly d k x-trans-coeffs y-trans-coeffs)
+  (destructuring-bind (txx txy txc txl) x-trans-coeffs
+    (destructuring-bind (tyx tyy tyc tyl) y-trans-coeffs
+      (let ((cx lx)
+            (cy ly)
+            result)
+        (flet ((xt-int-p () (zerop (mod (+ (* txx cx) (* txy cy) txc) txl)))
+               (yt-int-p () (zerop (mod (+ (* tyx cy) (* tyy cy) tyc) tyl))))
+          (loop for p from 0 to (1- k) do (progn
+                                            (push (and (xt-int-p) (yt-int-p)) result)
+                                            (psetf cx (+ (* cx px) (* cy py d))
+                                                   cy (+ (* cy px) (* cx py))))))))))
