@@ -305,7 +305,7 @@ diophantine_solve(-55*y^2-29*x*y-60*y+24*x^2-54*x+85);
 []$
 
 /* used to trigger a bug in dio_lmm() */
-ratsimp(diophantine_solve(x^2-119*y^2=18));
+ratsimp(diophantine_solve(x^2-119*y^2=18)); /* x=(3*X-17*Y+8)/12327,y=(-19*X+6*Y-13)/531; */ /* x=17*X-13*Y+12,y=-17*X+9*Y-3; */
 ''(ratsimp([[x = (3*sqrt(119)*((11*sqrt(119)+120)^%param-(120-11*sqrt(119))^%param))/2
     -(33*((11*sqrt(119)+120)^%param+(120-11*sqrt(119))^%param))/2,
   y = (33*((11*sqrt(119)+120)^%param-(120-11*sqrt(119))^%param))/(2*sqrt(119))
