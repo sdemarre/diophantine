@@ -352,7 +352,7 @@ diophantine_solve(6*x*y + 9*x + 2*y + 3);
 
 /* bug!, we should factor the eq first, and then solve for every factor, and return the solutions */
 diophantine_solve(x*y + x + y + 1);
-[[x=-1,y=%param],[x=%param,y=-1]]$
+[[x=-1,y=''%param],[x=''%param,y=-1]]$
 
 diophantine_solve(4*x**2 + 3*y**2 + 5*x - 11*y + 12);
 []$
@@ -394,11 +394,11 @@ diophantine_solve(10*x**2 + 12*x*y + 12*y**2 - 34);
 /*   y = ((2113761020*sqrt(149)+25801741449)^(2*%param)*(32009279211858377*sqrt(149)+390723046919097949)-32009279211858377*(25801741449-2113761020*sqrt(149))^(2*%param)*sqrt(149)+390723046919097949*(25801741449-2113761020*sqrt(149))^(2*%param)-184)/298]]))$ */
 
 diophantine_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1);
-[[x = %param, y = -%param-1]]$
+[[x = ''%param, y = -''%param-1]]$
 
 diophantine_solve(x**2 - 2*x*y + y**2 + 2*x + 2*y + 1);
-[[x = (-4*%param^2)+4*%param-1,y = (-4*%param^2)+8*%param-4],
- [x = -4*%param^2,y = (-4*%param^2)+4*%param-1]]$
+[[x = (-4*''%param^2)+4*''%param-1,y = (-4*''%param^2)+8*''%param-4],
+ [x = -4*''%param^2,y = (-4*''%param^2)+4*''%param-1]]$
 
 
 
