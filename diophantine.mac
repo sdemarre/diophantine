@@ -58,11 +58,11 @@ dio_integer_expressions(xexpr, yexpr, vals):=block([_e, result:[]],
     push([sx, sy], result)),
   reverse(result));
 
-diophantine_solve_simple_hyperbolic(x, y, b, d, e, f):=block(
+diophantine_solve_simple_hyperbolic(x, y, b, d, e, f):=block([result:[]],
   if (d*e-b*f=0) then block(
-    if integerp(e/b) then [[x = -e/b, y = dio_gensym()]]
-    elseif integerp(d/b) then [[x = dio_gensym(), y = -d/b]]
-    else [])
+    if integerp(e/b) then push([x = -e/b, y = dio_gensym()],result),
+    if integerp(d/b) then push([x = dio_gensym(), y = -d/b],result),
+    result)
   else block([divs: listify(divisors(d*e-b*f)), v],
     append(
       dio_integer_expressions(x = (v-e)/b, y = ((d*e-b*f)/v-d)/b, [v, divs]),
