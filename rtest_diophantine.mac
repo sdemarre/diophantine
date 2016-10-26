@@ -1,5 +1,5 @@
 /* setup */
-kill(r,s,x,y,p,%param);
+kill(r,s,x,y,p,q,%param);
 done$
 
 %param:dio_gensym();
