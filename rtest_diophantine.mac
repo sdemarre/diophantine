@@ -324,14 +324,14 @@ ratsimp(diophantine_solve(x**2 - 2*x*y + y**2 + 2*x + 2*y + 1));
     [x = -4*%param^2,y = (-4*%param^2)+4*%param-1]]))$
 
 ratsimp(diophantine_solve(x^2-119*y^2=18));
-''(ratsimp([[x = (3*sqrt(119)*((11*sqrt(119)+120)^%z8-(120-11*sqrt(119))^%z8))/2
-    -(33*((11*sqrt(119)+120)^%z8+(120-11*sqrt(119))^%z8))/2,
-  y = (33*((11*sqrt(119)+120)^%z8-(120-11*sqrt(119))^%z8))/(2*sqrt(119))
-    -(3*((11*sqrt(119)+120)^%z8+(120-11*sqrt(119))^%z8))/2],
- [x = (33*((11*sqrt(119)+120)^%z8+(120-11*sqrt(119))^%z8))/2
-    +(3*sqrt(119)*((11*sqrt(119)+120)^%z8-(120-11*sqrt(119))^%z8))/2,
-  y = (3*((11*sqrt(119)+120)^%z8+(120-11*sqrt(119))^%z8))/2
-    +(33*((11*sqrt(119)+120)^%z8-(120-11*sqrt(119))^%z8))/(2*sqrt(119))]]))$
+''(ratsimp([[x = (3*sqrt(119)*((11*sqrt(119)+120)^''%param-(120-11*sqrt(119))^''%param))/2
+    -(33*((11*sqrt(119)+120)^''%param+(120-11*sqrt(119))^''%param))/2,
+  y = (33*((11*sqrt(119)+120)^''%param-(120-11*sqrt(119))^''%param))/(2*sqrt(119))
+    -(3*((11*sqrt(119)+120)^''%param+(120-11*sqrt(119))^''%param))/2],
+ [x = (33*((11*sqrt(119)+120)^''%param+(120-11*sqrt(119))^''%param))/2
+    +(3*sqrt(119)*((11*sqrt(119)+120)^''%param-(120-11*sqrt(119))^''%param))/2,
+  y = (3*((11*sqrt(119)+120)^''%param+(120-11*sqrt(119))^''%param))/2
+    +(33*((11*sqrt(119)+120)^''%param-(120-11*sqrt(119))^''%param))/(2*sqrt(119))]]))$
 
 /* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
 
@@ -341,7 +341,7 @@ diophantine_solve(x^2+2*y^2=16);
 
 /* should be solved as 2 linears, but is handled by hyperbolic (degenerate case ?), not all solutions are generated */
 diophantine_solve(3*x^2+x*y-x);
-[[x=0,y=''%param],[x=-''%param,y=3*''%param+1]]$
+[[x=0,y=1-''%param],[x=-''%param,y=3*''%param+1]]$
 
 /* problem when trying to filter out rational solutions after solving with transformation */
 diophantine_solve(9*Y^2+42*Y-425*X^2+5100*X-15226);
