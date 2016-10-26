@@ -315,6 +315,24 @@ ratsimp(diophantine_solve(x^2-119*y^2=18)); /* x=(3*X-17*Y+8)/12327,y=(-19*X+6*Y
   y = (3*((11*sqrt(119)+120)^%param+(120-11*sqrt(119))^%param))/2
   +(33*((11*sqrt(119)+120)^%param-(120-11*sqrt(119))^%param))/(2*sqrt(119))]]))$
 
+
+ratsimp(diophantine_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1));
+''(ratsimp([[x = %param, y = -%param-1]]))$
+
+ratsimp(diophantine_solve(x**2 - 2*x*y + y**2 + 2*x + 2*y + 1));
+''(ratsimp([[x = (-4*%param^2)+4*%param-1,y = (-4*%param^2)+8*%param-4],
+    [x = -4*%param^2,y = (-4*%param^2)+4*%param-1]]))$
+
+ratsimp(diophantine_solve(x^2-119*y^2=18));
+''(ratsimp([[x = (3*sqrt(119)*((11*sqrt(119)+120)^%z8-(120-11*sqrt(119))^%z8))/2
+    -(33*((11*sqrt(119)+120)^%z8+(120-11*sqrt(119))^%z8))/2,
+  y = (33*((11*sqrt(119)+120)^%z8-(120-11*sqrt(119))^%z8))/(2*sqrt(119))
+    -(3*((11*sqrt(119)+120)^%z8+(120-11*sqrt(119))^%z8))/2],
+ [x = (33*((11*sqrt(119)+120)^%z8+(120-11*sqrt(119))^%z8))/2
+    +(3*sqrt(119)*((11*sqrt(119)+120)^%z8-(120-11*sqrt(119))^%z8))/2,
+  y = (3*((11*sqrt(119)+120)^%z8+(120-11*sqrt(119))^%z8))/2
+    +(33*((11*sqrt(119)+120)^%z8-(120-11*sqrt(119))^%z8))/(2*sqrt(119))]]))$
+
 /* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
 
 /* duplicate solutions, due to y=+-0 */
@@ -329,6 +347,8 @@ diophantine_solve(3*x^2+x*y-x);
 diophantine_solve(9*Y^2+42*Y-425*X^2+5100*X-15226);
 []$
 
+diophantine_solve(9*y^2+42*y-17*x^2+204*x-563 = 13)$
+[]$
 
 /* tests taken from sympy */
 diophantine_solve(3*x*y + 34*x - 12*y + 1);
