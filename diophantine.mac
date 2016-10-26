@@ -101,10 +101,10 @@ diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,
   else block([un:abs(qcdqae),u,result:[]],
     for u:0 thru un do block(
       if mod(qa*g*u^2+d*u+qa*f,qc*d-qa*e) = 0 then block([
-        xv:qc*g*(qa*e-qc*d)*dio_gensym()^2-(e+2*qc*g*u)*dio_gensym()-(qc*g*u^2+e*u+qc*f)/qcdqae,
+        xv:-1*qc*g*qcdqae*dio_gensym()^2-(e+2*qc*g*u)*dio_gensym()-(qc*g*u^2+e*u+qc*f)/qcdqae,
         yv:qa*g*qcdqae*dio_gensym()^2+(d+2*qa*g*u)*dio_gensym()+(qa*g*u^2+d*u+qa*f)/qcdqae],
         push([x = xv, y = yv], result))),
-          reverse(result)));
+    reverse(result)));
 
 diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
   if a = 0 then
@@ -149,6 +149,8 @@ remove_if(pred, list):=block([result:[],e],
 remove_if_not(pred, list):=block([result:[],e],
   for e in list do if pred(e) then push(e,result),
   reverse(result));
+
+remove_duplicates(l):=listify(setify(l));
 
 integer_solution_p(s):=integerp(rhs(s[1])) and integerp(rhs(s[2]));
 
@@ -307,7 +309,7 @@ diophantine_transform_to_pell(eq):=block([transforms, final_transform, transform
   vars:listofvars(eq),
   up_vars: map(lambda([v],parse_string(supcase(string(v),1,2))),vars),
   if up_vars = vars then up_vars:map(lambda([v],parse_string(sdowncase(string(v),1,2))),vars),
-  new_vars:listofvars(map(rhs,final_transform)),
+  new_vars:listofvars(transformed_eq),
   to_new_vars: [new_vars[1]=up_vars[1], new_vars[2]=up_vars[2]],
   new_pell:subst(to_new_vars, dio_make_coeffs_integer(transformed_eq)),
   [ratsimp(subst(to_new_vars,final_transform)), new_pell]);
