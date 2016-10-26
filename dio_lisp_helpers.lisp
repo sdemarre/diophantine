@@ -102,6 +102,17 @@
                        (when (zerop (f x y))
                          (push (list '(mlist simp) x y) result))))
              result)))))
+
+(defun $dio_compute_k_power (a b q l)
+  "Finds k so that (a+sqrt(q)*b)^k = 1 mod l. Assumes such a k exists. If not,
+this function will search forever."
+  (let ((ca a)
+	(cb b))
+    (do* ((k 1 (1+ k)))
+	 ((and (= (mod ca l) 1) (= (mod cb l) 0)) k)
+      (psetf ca (mod (+ (* a ca) (* b cb q)) l)
+	     cb (mod (+ (* a cb) (* b ca)) l)))))
+
 (defun pqa-get (pqa var)
   (let ((var-eq-list (find-if #'(lambda (candidate) (eq (second candidate) var)) (rest pqa))))
     (when var-eq-list (rest (third var-eq-list)))))
@@ -141,6 +152,7 @@
     (cons '(mlist simp) result)))
 
 
+
 (defun dio_integer_pell_array (px py lx ly d k x-trans-coeffs y-trans-coeffs)
   (destructuring-bind (txx txy txc txl) x-trans-coeffs
     (destructuring-bind (tyx tyy tyc tyl) y-trans-coeffs
@@ -153,3 +165,32 @@
                                             (push (and (xt-int-p) (yt-int-p)) result)
                                             (psetf cx (+ (* cx px) (* cy py d))
                                                    cy (+ (* cy px) (* cx py))))))))))
+
+(defun check-mod-solution (m a b c d e f)
+  (loop for x from 0 below m do
+       (let ((z (+ (* a x x) (* d x) f))
+	     (u (+ (* b x) e)))
+	 (loop for y from 0 below m do
+	      (when (zerop (mod (+ z (* y (+ u (* c y)))) m))
+		(return-from check-mod-solution)))))
+  t)
+
+(defun $dio_check_mod (eq)
+  (let ((coeffs (mapcar #'caddr (rest (mcall '$dio_coeffs eq)))))
+    (not (or (apply #'check-mod-solution (cons 4 coeffs))
+	     (apply #'check-mod-solution (cons 16 coeffs))
+	     (apply #'check-mod-solution (cons 25 coeffs))))))
+
+(defun qmul (s u q x y)
+  "computes (t+sqrt(q)*u)*(x+sqrt(q)*y)"
+  (cons (+ (* s x) (* q u y)) (+ (* s y) (* u x))))
+
+(defmacro qmulf (s u q x y)
+  `(psetf ,s (+ (* ,s ,x) (* ,q ,u ,y))
+	  ,u (+ (* ,s ,y) (* ,u ,x))))
+
+(defun optimize-stream (gen k)
+  (cons gen k))
+
+;; receive i -> add expression i+j*k but check if it can be combined with an existing expression first
+

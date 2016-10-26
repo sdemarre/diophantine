@@ -84,3 +84,61 @@ find_eq_with_powers():=block([eq:dio_random_eq(10),s,M],
 
 
 dio_test():=block([dt:display2d,result],display2d:false,result:batch(rtest_diophantine,test),display2d:dt,result);
+
+matchdeclare(aa,integerp,bb,integerp,ee,all);
+defmatch(zlin, ee^(aa*%z1+bb));
+find_all_z_powers_h(expr):=if not atom(expr) then (if zlin(expr)#false then push([aa,bb],all_powers) else (for e in args(expr) do find_all_z_powers_h(e)));
+all_z_powers(top_expr):=(all_powers:[],find_all_z_powers_h(top_expr),listify(setify(all_powers)));
+has_high_z_power(expr):=some(lambda([zp],is(zp[1]>2)),all_z_powers(expr));
+
+dio_sol_matrix(solutions,zmin,zmax):=block([num_sol:makelist(ratsimp(subst(dio_gensym()=i,solutions)),i,zmin,zmax)],
+  apply(matrix,map(lambda([s],map(integer_solution_p,s)),num_sol)));
+
+
+dio_rat_solutions(pell_transform, vars, pell_min_sol, fund_sol, q, k, L):=block([result:[],t,u],
+  [t,u]:map(rhs,pell_min_sol),
+  for fs in fund_sol do block([fx,fy,ppq,fpq,pmq,fmq],
+    [fx,fy]:map(rhs,fs),
+    ppq:(t+sqrt(q)*u)^dio_gensym(),
+    pmq:(t-sqrt(q)*u)^dio_gensym(),
+    fpq:(fx+sqrt(q)*fy),
+    fmq:(fx-sqrt(q)*fy),
+    push([vars[1]=(ppq*fpq+pmq*fmq)/2, vars[2]=(ppq*fpq-pmq*fmq)/2/sqrt(q)],result),
+    push([vars[1]=-(ppq*fpq+pmq*fmq)/2, vars[2]=-(ppq*fpq-pmq*fmq)/2/sqrt(q)],result)),
+  dio_subst(result,pell_transform));
+
+dio_unfiltered_solution(eq):=block([pell_transform:diophantine_transform_to_pell(eq),vars,coeffs,pell_min_sol,fund_sol,k,f,L,result:[]],
+  L:apply(lcm,map(denom, map(rhs, pell_transform[1]))),
+  vars:listofvars(pell_transform[2]),
+  coeffs:[coeff(pell_transform[2],vars[1],2),coeff(pell_transform[2],vars[2],2),subst([vars[1]=0,vars[2]=0],pell_transform[2])],
+  q:-coeffs[1]*coeffs[2],
+  pell_min_sol: if abs(coeffs[1]) = 1 then dio_min_pos_pell_solution(vars[1],vars[2],q,1) else dio_min_pos_pell_solution(vars[2],vars[1],q,1),
+  fund_sol: if abs(coeffs[1]) = 1 then dio_lmm(vars[1],vars[2],q,-coeffs[1]*coeffs[3]) else dio_lmm(vars[2],vars[1],q,-coeffs[2]*coeffs[3]),
+  k:dio_compute_k_power(rhs(pell_min_sol[1]),rhs(pell_min_sol[2]),q,L),
+  [pell_transform[1],vars,pell_min_sol,fund_sol,q,k,L]);
+
+
+dio_unique_columns(mat):=transpose(apply(matrix,listify(setify(args(transpose(mat))))));
+
+has_rat_solutions(sol):=block([],
+  dio_infinite_solutions(sol) and not every(lambda([s],every(integer_solution_p,s)), makelist(ratsimp(subst(%z1=i,sol)),i,-5,5)));
+dio_find_difficult_eq():=block([result:[],i],
+  for i:1 thru 100000 do block([eq:dio_random_eq(15)],
+    the_eq:eq,
+    print(['i=i,'working_on_eq=eq]),
+    block([sol:diophantine_solve(eq)],
+      if dio_infinite_solutions(sol) then (
+        if has_high_z_power(sol) then print('eq_with_high_power=eq),
+        if has_rat_solutions(sol) then (
+          print('eq_with_rat_sols=eq),
+          push(eq,result))))),
+  result);
+
+dsv(x):=diophantine_swap_vars(x);
+dtp(x):=diophantine_transform_to_pell(x);
+ds(x):=diophantine_solve(x);
+dis(x,a,b):=diophantine_instantiate_solutions(x,a,b);
+
+
+matchdeclare(aa,integerp,bb,integerp,qq,integerp);
+defrule(sqrt_decomp,aa+bb*sqrt(qq),[aa,bb,qq]);
