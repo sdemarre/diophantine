@@ -92,16 +92,25 @@
 	  (reduce #'min point-data :key #'second)
 	  (reduce #'max point-data :key #'second))))
 
+(defun make-fun-form (a b c d e f)
+  `(lambda (x y)
+     (declare (optimize (speed 3) (safety 0))
+	      (type integer a b c d e f x y))
+     (+ ,@(unless (zerop a) (list (list '* a 'x 'x)))
+	,@(unless (zerop b) (list (list '* b 'x 'y)))
+	,@(unless (zerop c) (list (list '* c 'y 'y)))
+	,@(unless (zerop d) (list (list '* d 'x)))
+	,@(unless (zerop e) (list (list '* e 'y)))
+	,@(unless (zerop f) (list f)))))
 (defun $dio_brute_force (a b c d e f limit &optional pos)
-  (flet ((f (x y) (+ (* a x x) (* b x y) (* c y y) (* d x) (* e y) f)))
-    (cons '(mlist simp)
-          (reverse
-           (let (result)
-             (loop for x from (if pos 1 (- limit)) to limit do
-                  (loop for y from (if pos 1 (- limit)) to limit do
-                       (when (zerop (f x y))
-                         (push (list '(mlist simp) x y) result))))
-             result)))))
+  (let (result)
+    (with-output-to-string (*error-output*)
+      (compile 'fun (make-fun-form a b c d e f))
+      (loop for x from (if pos 1 (- limit)) to limit do
+		 (loop for y from (if pos 1 (- limit)) to limit do
+		      (when (zerop (fun x y))
+			(push (list '(mlist simp) x y) result)))))
+    (cons '(mlist simp) result)))
 
 (defun $dio_compute_k_power (a b q l)
   "Finds k so that (a+sqrt(q)*b)^k = 1 mod l. Assumes such a k exists. If not,
