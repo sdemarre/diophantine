@@ -134,6 +134,15 @@ dio_find_difficult_eq():=block([result:[],i],
           push(eq,result))))),
   result);
 
+find_rat_indices(vars, transform, min_pell, fund_sol, q, k, L):=block([cx:rhs(fund_sol[1]),cy:rhs(fund_sol[2]),result:[]],
+  for pow:0 thru k-1 do block([actual:subst([vars[1]=cx,vars[2]=cy],transform)],
+    if integerp(rhs(actual[1])) and integerp(rhs(actual[2])) then (
+      push(pow,result)),
+    block([ncx:q^2*cy*rhs(min_pell[2]) + cx*rhs(min_pell[1]), ncy:cy*rhs(min_pell[1])+cx*rhs(min_pell[2])],
+      cx:mod(ncx,L),
+      cy:mod(ncy,L))),
+  reverse(result));
+
 dsv(x):=diophantine_swap_vars(x);
 dtp(x):=diophantine_transform_to_pell(x);
 ds(x):=diophantine_solve(x);
