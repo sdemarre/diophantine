@@ -333,22 +333,10 @@ ratsimp(diophantine_solve(x^2-119*y^2=18));
   y = (3*((11*sqrt(119)+120)^''%param+(120-11*sqrt(119))^''%param))/2
     +(33*((11*sqrt(119)+120)^''%param-(120-11*sqrt(119))^''%param))/(2*sqrt(119))]]))$
 
-/* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
-
-/* duplicate solutions, due to y=+-0 */
-diophantine_solve(x^2+2*y^2=16);
-[[x=-4,y=0],[x=4,y=0]]$
 
 /* should be solved as 2 linears, but is handled by hyperbolic (degenerate case ?), not all solutions are generated */
 diophantine_solve(3*x^2+x*y-x);
 [[x=0,y=1-''%param],[x=-''%param,y=3*''%param+1]]$
-
-/* problem when trying to filter out rational solutions after solving with transformation */
-diophantine_solve(9*Y^2+42*Y-425*X^2+5100*X-15226);
-[]$
-
-diophantine_solve(9*y^2+42*y-17*x^2+204*x-563 = 13)$
-[]$
 
 /* tests taken from sympy */
 diophantine_solve(3*x*y + 34*x - 12*y + 1);
@@ -386,6 +374,14 @@ diophantine_solve(15*x**2 - 9*x*y + 14*y**2 - 23*x - 14*y - 4950);
 diophantine_solve(10*x**2 + 12*x*y + 12*y**2 - 34);
 [[x = -1,y = -1],[x = -1,y = 2],[x = 1,y = -2],[x = 1,y = 1]]$
 
+diophantine_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1);
+[[x = ''%param, y = -''%param-1]]$
+
+diophantine_solve(x**2 - 2*x*y + y**2 + 2*x + 2*y + 1);
+[[x = (-4*''%param^2)+4*''%param-1,y = (-4*''%param^2)+8*''%param-4],
+ [x = -4*''%param^2,y = (-4*''%param^2)+4*''%param-1]]$
+
+
 /* slow, as predicted by sympy, 270 seconds on core2@2.83GHz */
 /* ratsimp(diophantine_solve(5*x**2 - 13*x*y + y**2 - 4*x - 4*y - 15)); */
 /* ''(ratsimp([[x = ((2113761020*sqrt(149)+25801741449)^(2*%param)*(9718982013*sqrt(149)-118635294470)+(9718982013*(25801741449-2113761020*sqrt(149))^(2*%param)-60)*sqrt(149)+118635294470*(25801741449-2113761020*sqrt(149))^(2*%param))/149^(3/2), */
@@ -413,12 +409,19 @@ diophantine_solve(10*x**2 + 12*x*y + 12*y**2 - 34);
 /*  [x = ((2113761020*sqrt(149)+25801741449)^(2*%param)*(984878221251517151*sqrt(149)+12021970782431527065)+(984878221251517151*(25801741449-2113761020*sqrt(149))^(2*%param)-120)*sqrt(149)-12021970782431527065*(25801741449-2113761020*sqrt(149))^(2*%param))/(2*149^(3/2)), */
 /*   y = ((2113761020*sqrt(149)+25801741449)^(2*%param)*(32009279211858377*sqrt(149)+390723046919097949)-32009279211858377*(25801741449-2113761020*sqrt(149))^(2*%param)*sqrt(149)+390723046919097949*(25801741449-2113761020*sqrt(149))^(2*%param)-184)/298]]))$ */
 
-diophantine_solve(x**2 + 2*x*y + y**2 + 2*x + 2*y + 1);
-[[x = ''%param, y = -''%param-1]]$
-
-diophantine_solve(x**2 - 2*x*y + y**2 + 2*x + 2*y + 1);
-[[x = (-4*''%param^2)+4*''%param-1,y = (-4*''%param^2)+8*''%param-4],
- [x = -4*''%param^2,y = (-4*''%param^2)+4*''%param-1]]$
 
 
+
+/* THESE ARE EXPECTED TO FAIL (for now) !!!!! */
+
+/* duplicate solutions, due to y=+-0 */
+diophantine_solve(x^2+2*y^2=16);
+[[x=-4,y=0],[x=4,y=0]]$
+
+/* problem when trying to filter out rational solutions after solving with transformation */
+diophantine_solve(9*y^2+42*y-425*x^2+5100*x-15226);
+[]$
+
+diophantine_solve(9*y^2+42*y-17*x^2+204*x-563 = 13)$
+[]$
 
