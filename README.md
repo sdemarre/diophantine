@@ -57,6 +57,7 @@ Generating some specific values when the solution contains %z1 can be done like 
 
 The test file (rtest_diophantine.mac) contains possibly interesting examples and examples that show the following issues:
 * Some solutions show up more than once in the set of solutions (both for equations with finite and infinite solutions).
+* Sometimes, rational solutions are given, they should be filtered out
 * Even apparently simple equations can take a very long time to solve.
 
 ## Tests
