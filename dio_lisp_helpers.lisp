@@ -108,7 +108,7 @@
       (compile 'fun (make-fun-form a b c d e f))
       (loop for x from (if pos 1 (- limit)) to limit do
 		 (loop for y from (if pos 1 (- limit)) to limit do
-		      (when (zerop (fun x y))
+		      (when (zerop (funcall 'fun x y))
 			(push (list '(mlist simp) x y) result)))))
     (cons '(mlist simp) result)))
 
@@ -171,9 +171,10 @@ this function will search forever."
         (flet ((xt-int-p () (zerop (mod (+ (* txx cx) (* txy cy) txc) txl)))
                (yt-int-p () (zerop (mod (+ (* tyx cy) (* tyy cy) tyc) tyl))))
           (loop for p from 0 to (1- k) do (progn
-                                            (push (and (xt-int-p) (yt-int-p)) result)
+                                            (when (and (xt-int-p) (yt-int-p)) (push p result))
                                             (psetf cx (+ (* cx px) (* cy py d))
-                                                   cy (+ (* cy px) (* cx py))))))))))
+                                                   cy (+ (* cy px) (* cx py))))))
+	(reverse result)))))
 
 (defun check-mod-solution (m a b c d e f)
   (loop for x from 0 below m do
@@ -191,7 +192,7 @@ this function will search forever."
 	     (apply #'check-mod-solution (cons 25 coeffs))))))
 
 (defun qmul (s u q x y)
-  "computes (t+sqrt(q)*u)*(x+sqrt(q)*y)"
+  "computes (s+sqrt(q)*u)*(x+sqrt(q)*y)"
   (cons (+ (* s x) (* q u y)) (+ (* s y) (* u x))))
 
 (defmacro qmulf (s u q x y)
@@ -203,3 +204,31 @@ this function will search forever."
 
 ;; receive i -> add expression i+j*k but check if it can be combined with an existing expression first
 
+(defun all-elements-in-ipowers (k divisor increment ipowers)
+  (loop for i from 0 to (1- (/ k divisor)) always (gethash (+ (* i divisor) increment) ipowers)))
+(defun unmark-all-elements (k divisor increment ipowers)
+  (loop for i from 0 to (1- (/ k divisor)) do (remhash (+ (* i divisor) increment) ipowers)))
+(defun $find_min_coverage (integer-powers k k-divisors)
+  (let* ((ipowers (make-hash-table :size (length integer-powers)))
+	 result)
+    (loop for i in (rest integer-powers) do (setf (gethash i ipowers) t))
+    (loop for divisor in (rest k-divisors) do
+	 (unless (zerop (hash-table-count ipowers))
+	   (loop for increment from 0 to (1- divisor) do
+		(when (all-elements-in-ipowers k divisor increment ipowers)
+		  (unmark-all-elements k divisor increment ipowers)
+		  (push (list '(mlist simp) divisor increment) result)
+		  (when (zerop (hash-table-count ipowers))
+		    (return))))))
+    (cons '(mlist simp) (reverse result))))
+
+
+;; unmarked = length(integer-powers)
+;; for d in divisors
+;;    for increment from 0 to d-1
+;;       if all-elements-integer(k,d,increment, integer-powers)
+;;          count-marked = mark-all-elements(k,d,increment, integer-powers)
+;;          add-expression-to-result(k,d,increment)
+;;          unmarked -= count-marked
+;;          if unmarked == 0
+;;              return result
