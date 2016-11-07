@@ -167,7 +167,10 @@ dio_solve_annoying_parabolic(eq):=block([transform, vars, min_pell, fund_sols, q
   int_power_exprs:makelist(find_min_coverage(int_powers, k, listify(divisors(k))), int_powers, int_power_lists),
   gen_annoying_sols(transform, vars, min_pell, fund_sols, q, int_power_exprs));
 
-dsv(x):=diophantine_swap_vars(x);
-dtp(x):=diophantine_transform_to_pell(x);
-ds(x):=diophantine_solve(x);
-dis(x,a,b):=diophantine_instantiate_solutions(x,a,b);
+dsv(eq):=diophantine_swap_vars(eq);
+dtp(eq):=diophantine_transform_to_pell(eq);
+ds(eq):=diophantine_solve(eq);
+dis(eq,[rest]):=apply(diophantine_instantiate_solutions,cons(eq,rest));
+dsap(eq):=dio_solve_annoying_parabolic(eq);
+dus(eq):=dio_unfiltered_solution(eq);
+drs(eq):=apply(dio_rat_solutions, dus(eq));
