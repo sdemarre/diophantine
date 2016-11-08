@@ -161,7 +161,7 @@ block([ppq:subst(min_pell,vars[1]+sqrt(q)*vars[2])^dio_gensym(),
       push(subst([vars[1]=v1, vars[2]=v2], transform), result),
       push(subst([vars[1]=v1, vars[2]=-v2], transform), result))),
   result);
-dio_solve_annoying_parabolic(eq):=block([transform, vars, min_pell, fund_sols, q, k, L, fund_sol, int_power_lists, int_powers, int_power_exprs],
+dio_solve_annoying_hyperbolic(eq):=block([transform, vars, min_pell, fund_sols, q, k, L, fund_sol, int_power_lists, int_powers, int_power_exprs],
   [transform, vars, min_pell, fund_sols, q, k, L]:dio_unfiltered_solution(eq),
   int_power_lists:makelist(find_int_powers(transform, vars, min_pell, fund_sol, q, k, L), fund_sol, fund_sols),
   int_power_exprs:makelist(find_min_coverage(int_powers, k, listify(divisors(k))), int_powers, int_power_lists),
@@ -171,6 +171,7 @@ dsv(eq):=diophantine_swap_vars(eq);
 dtp(eq):=diophantine_transform_to_pell(eq);
 ds(eq):=diophantine_solve(eq);
 dis(eq,[rest]):=apply(diophantine_instantiate_solutions,cons(eq,rest));
-dsap(eq):=dio_solve_annoying_parabolic(eq);
+dsah(eq):=dio_solve_annoying_hyperbolic(eq);
 dus(eq):=dio_unfiltered_solution(eq);
 drs(eq):=apply(dio_rat_solutions, dus(eq));
+drv(eq):=dio_reset_vars(eq);
