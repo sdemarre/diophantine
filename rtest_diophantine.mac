@@ -422,6 +422,13 @@ diophantine_solve(x^2+2*y^2=16);
 diophantine_solve(9*y^2+42*y-425*x^2+5100*x-15226);
 []$
 
-diophantine_solve(9*y^2+42*y-17*x^2+204*x-563 = 13)$
+diophantine_solve(9*y^2+42*y-17*x^2+204*x-563 = 13);
 []$
 
+/* duplicate answers, why ? */
+diophantine_solve(-y+x^2+3*x-7);
+[[x = %z11,y = %z11^2+3*%z11-7]]$
+
+/* this is the same as above, but with some linear transform applied */
+diophantine_solve(y^2+4*x*y-3*y+4*x^2-5*x-13)$
+[[x = (-%z11^2)+%z11+15,y = 2*%z11^2-%z11-29]]$
