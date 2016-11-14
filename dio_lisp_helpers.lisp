@@ -92,25 +92,40 @@
 	  (reduce #'min point-data :key #'second)
 	  (reduce #'max point-data :key #'second))))
 
-(defun make-fun-form (a b c d e f)
-  `(lambda (x y)
+;; ;;
+;; 	   (+ ,@(unless (zerop a) (list (list '* a 'x 'x)))
+;; 	      ,@(unless (zerop b) (list (list '* b 'x 'y)))
+;; 	      ,@(unless (zerop c) (list (list '* c 'y 'y)))
+;; 	      ,@(unless (zerop d) (list (list '* d 'x)))
+;; 	      ,@(unless (zerop e) (list (list '* e 'y)))
+;; 	      ,@(unless (zerop f) (list f)))
+(defun make-bf-checker-form (a b c d e f)
+  `(lambda (limit pos)
      (declare (optimize (speed 3) (safety 0))
-	      (type integer a b c d e f x y))
-     (+ ,@(unless (zerop a) (list (list '* a 'x 'x)))
-	,@(unless (zerop b) (list (list '* b 'x 'y)))
-	,@(unless (zerop c) (list (list '* c 'y 'y)))
-	,@(unless (zerop d) (list (list '* d 'x)))
-	,@(unless (zerop e) (list (list '* e 'y)))
-	,@(unless (zerop f) (list f)))))
+	      (type (integer -10000000 10000000) limit))
+     (let (result
+	   (start (if pos 0 (- limit))))
+       (declare (type (integer -10000000 10000000) start))
+       (loop for x fixnum from start to limit do
+	    (let ((fxy (+ (* ,a (the fixnum (* x x)))
+			  (* ,b x start)
+			  (* ,c (the fixnum (* start start)))
+			  (* ,d x)
+			  (* ,e start)
+			  ,f)))
+	      (declare (type fixnum fxy))
+	      (loop for y fixnum from start to limit do
+		   (when (zerop fxy)
+		     (push (list '(mlist simp) x y) result))
+		   (incf fxy (+ ,@(unless (zerop c) (list (list '* (* 2 c) 'y)))
+				,@(unless (zerop b) (list (list '* b 'x)))
+				,@(unless (zerop e) (list e))
+				,@(unless (zerop c) (list c)))))))
+       (cons '(mlist simp) result))))
 (defun $dio_brute_force (a b c d e f limit &optional pos)
-  (let (result)
-    (with-output-to-string (*error-output*)
-      (compile 'fun (make-fun-form a b c d e f))
-      (loop for x from (if pos 1 (- limit)) to limit do
-		 (loop for y from (if pos 1 (- limit)) to limit do
-		      (when (zerop (funcall 'fun x y))
-			(push (list '(mlist simp) x y) result)))))
-    (cons '(mlist simp) result)))
+  (with-output-to-string (*error-output*)
+    (compile 'bf-fun (make-bf-checker-form a b c d e f)))
+  (funcall 'bf-fun limit pos))
 
 (defun $dio_compute_k_power (a b q l)
   "Finds k so that (a+sqrt(q)*b)^k = 1 mod l. Assumes such a k exists. If not,
@@ -191,17 +206,6 @@ this function will search forever."
 	     (apply #'check-mod-solution (cons 16 coeffs))
 	     (apply #'check-mod-solution (cons 25 coeffs))))))
 
-(defun qmul (s u q x y)
-  "computes (s+sqrt(q)*u)*(x+sqrt(q)*y)"
-  (cons (+ (* s x) (* q u y)) (+ (* s y) (* u x))))
-
-(defmacro qmulf (s u q x y)
-  `(psetf ,s (+ (* ,s ,x) (* ,q ,u ,y))
-	  ,u (+ (* ,s ,y) (* ,u ,x))))
-
-(defun optimize-stream (gen k)
-  (cons gen k))
-
 ;; receive i -> add expression i+j*k but check if it can be combined with an existing expression first
 
 (defun all-elements-in-ipowers (k divisor increment ipowers)
@@ -232,3 +236,25 @@ this function will search forever."
 ;;          unmarked -= count-marked
 ;;          if unmarked == 0
 ;;              return result
+
+
+(defun check-bf-fun (limit &optional pos)
+  (declare (optimize (speed 3) (safety 0))
+           (type (integer -100000000 100000000) limit))
+  (let (result
+	(y-limit (if pos 0 (- limit))))
+    (format t "y-limit = ~a~%" y-limit)
+    (loop for x fixnum from y-limit to limit
+       do (let ((fxy
+		 (the fixnum (+ (the fixnum (* -425 (the fixnum (* x x))))
+				(* 9 (the fixnum (* y-limit y-limit)))
+				(* 42 y-limit)
+				(* 5100 x)
+				-15226))))
+	    (declare (type fixnum fxy))
+	    (loop for y fixnum from y-limit to limit
+	       do (progn
+		    (when (zerop fxy)
+		      (push (list '(mlist simp) x y) result))
+		   (incf fxy (+ (* 2 9 y) 51))))))
+    (cons '(mlist simp) result)))
