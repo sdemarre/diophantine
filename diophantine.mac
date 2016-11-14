@@ -206,8 +206,12 @@ block([sol,result:[],limit,param:dio_gensym()],
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then (
     diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f))
-  else block([eq:a*x*x+b*x*y+c*y*y+d*x+e*y+f],
-    dio_solve_annoying_hyperbolic(eq)));
+  else block([eq:a*x*x+b*x*y+c*y*y+d*x+e*y+f,dtp],
+    dtp:dtp(eq),
+    if perfect_squarep(abs(coeff(dtp[2],listofvars(dtp[2])[2],2))) then block([s:diophantine_solve(dtp[2])],
+      remove_if_not(integer_solution_p, dio_subst(s,dtp[1]))
+      ) else (
+    dio_solve_annoying_hyperbolic(eq))));
 
 defstruct(pqa(pp,g,b,q));
 do_pqa(p,q,d):=block([result:dio_pqa(p,q,d)],

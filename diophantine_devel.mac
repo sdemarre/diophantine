@@ -8,7 +8,6 @@ dio_trace():=trace(dio_all_pell_solutions,
   dio_gen_euclid,
   dio_infinite_solutions,
   dio_integer_expressions,
-  dio_lmm,
   dio_make_a_one_transform,
   dio_make_b_zero_transform,
   dio_make_coeffs_integer,
@@ -41,8 +40,7 @@ dio_trace():=trace(dio_all_pell_solutions,
   make_d_zero,
   make_e_zero,
   perfect_squarep,
-  remove_rat_sols,
-  square_divisors);
+  remove_rat_sols);
 
 dio_rand(n):=random(n)-floor(n/2);
 
@@ -115,7 +113,7 @@ dio_basic_solution(eq):=block([pell_transform:diophantine_transform_to_pell(eq),
   q:-coeffs[1]*coeffs[2],
   pell_min_sol: if abs(coeffs[1]) = 1 then dio_min_pos_pell_solution(vars[1],vars[2],q,1) else dio_min_pos_pell_solution(vars[2],vars[1],q,1),
   fund_sol: if abs(coeffs[1]) = 1 then dio_lmm(vars[1],vars[2],q,-coeffs[1]*coeffs[3]) else dio_lmm(vars[2],vars[1],q,-coeffs[2]*coeffs[3]),
-  k:dio_compute_k_power(rhs(pell_min_sol[1]),rhs(pell_min_sol[2]),q,L),
+  k:if L=1 then 1 else dio_compute_k_power(rhs(pell_min_sol[1]),rhs(pell_min_sol[2]),q,L),
   [pell_transform[1],vars,pell_min_sol,fund_sol,q,k,L]);
 
 dio_unfiltered_solutions(eq):=block([transform, vars, min_pell, fund_sols, q, k, L],
@@ -131,15 +129,13 @@ dio_unique_columns(mat):=transpose(apply(matrix,listify(setify(args(transpose(ma
 has_rat_solutions(sol):=block([],
   dio_infinite_solutions(sol) and not every(lambda([s],every(integer_solution_p,s)), makelist(ratsimp(subst(%z1=i,sol)),i,-5,5)));
 dio_find_difficult_eq():=block([result:[],i],
-  for i:1 thru 100000 do block([eq:dio_random_eq(20)],
+  for i:1 thru 100000 do block([eq:(-8*y^2)+9*x*y+4*y+6*x^2-8*x+3,time:?get\-internal\-real\-time()],
     the_eq:eq,
-    print(['i=i,'working_on_eq=eq,'dtp=dtp(eq)]),
-    timer(diophantine_solve),
+    print(['i=i,'working_on_eq=eq]),    
     block([sol:diophantine_solve(eq)],
+      print(?get\-internal\-real\-time() - time),
       if dio_infinite_solutions(sol) then (
-        if has_high_z_power(sol) then (print('eq_with_high_power=eq),push(eq,result))),
-      print(get(diophantine_solve,'runtime)),
-      untimer(diophantine_solve))),
+        if has_high_z_power(sol) then (print('eq_with_high_power=eq),push(eq,result))))),
   result);
 
 find_int_powers(transform, vars, min_pell, fund_sol, q, k, L, signs):=block([cx:rhs(fund_sol[1]),cy:rhs(fund_sol[2]),result:[],neg1:signs[1],neg2:signs[2]],
@@ -221,3 +217,6 @@ dbs(eq):=dio_basic_solution(eq);
 drs(eq):=apply(dio_rat_solutions, dus(eq));
 drv(eq):=dio_reset_vars(eq);
 dbf(eq,[rest]):=apply(diophantine_brute_force, cons(eq,rest));
+zdis(eq):=dis(eq,0,0,sorted);
+odis(eq):=dis(eq,0,1,sorted);
+modis(eq):=dis(eq,-1,1,sorted);
