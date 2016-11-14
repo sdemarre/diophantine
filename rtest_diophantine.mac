@@ -450,3 +450,9 @@ diophantine_solve((-4)-12*x-9*x^2-5*y+11*x*y+y^2);
 swapped vars knows immediately there are no solutions
 diophantine_solve(2*y^2+6*x*y+3*x^2+6*x-1);
 */
+
+
+/* interesting for slowness in this form, and speed when x and y are swapped. */
+diophantine_solve(y^2-13*x*y-4*y+5*x^2-4*x-15);
+[]$
+
