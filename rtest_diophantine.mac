@@ -522,3 +522,11 @@ diophantine_solve(y^2-13*x*y-4*y+5*x^2-4*x-15);
 /* not solved !?!?!? -> solved
 diophantine_solve((-8*y^2)+9*x*y+4*y+6*x^2-8*x+3);
 */
+
+/* gives rational solutions !? */
+diophantine_solve((-y^2)+4*x*y-4*x^2+2*x-3);
+[]$
+
+/* no solutions found, why not ? */
+diophantine_solve(5*y^2+6*x*y+y);
+[]$
