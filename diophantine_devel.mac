@@ -210,6 +210,7 @@ gen_complex_sols(eq):=block([s:dbs(eq),transform, vars, min_pell, fund_sols, q, 
     push([vars[1]=-(ppq*fpq+pmq*fmq)/2,vars[2]=-(ppq*fpq-pmq*fmq)/2/sqrt(q)],result)),
   result
   );
+
 /* convenience: aliases */
 dsv(eq):=diophantine_swap_vars(eq);
 dtp(eq):=diophantine_transform_to_pell(eq);
@@ -219,3 +220,4 @@ dsah(eq):=dio_solve_annoying_hyperbolic(eq);
 dbs(eq):=dio_basic_solution(eq);
 drs(eq):=apply(dio_rat_solutions, dus(eq));
 drv(eq):=dio_reset_vars(eq);
+dbf(eq,[rest]):=apply(diophantine_brute_force, cons(eq,rest));
