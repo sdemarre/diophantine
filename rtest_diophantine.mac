@@ -430,5 +430,23 @@ diophantine_solve(-y+x^2+3*x-7);
 [[x = %z11,y = %z11^2+3*%z11-7]]$
 
 /* this is the same as above, but with some linear transform applied */
-diophantine_solve(y^2+4*x*y-3*y+4*x^2-5*x-13)$
+diophantine_solve(y^2+4*x*y-3*y+4*x^2-5*x-13);
 [[x = (-%z11^2)+%z11+15,y = 2*%z11^2-%z11-29]]$
+
+/* different number of fundamental solutions, depending on swap of vars !?
+solutions between [-2M,-2M] and [2M,2M]
+[ x = -1397624, y = -1069156]
+[ x = -50, y = -37]
+[ x = -50, y = 592]
+[ x = 31, y = -361]
+[ x = 31, y = 25]
+[ x = 82, y = -961]
+[ x = 82, y = 64]
+*/
+diophantine_solve((-4)-12*x-9*x^2-5*y+11*x*y+y^2);
+[]$
+
+/* infinite loop !?!?
+swapped vars knows immediately there are no solutions
+diophantine_solve(2*y^2+6*x*y+3*x^2+6*x-1);
+*/

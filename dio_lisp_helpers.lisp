@@ -9,7 +9,7 @@
       ($dio_pqa (* p (abs q)) (* q (abs q)) (* d q q))
       (let ((qd (sqrt (* d 1.0d0)))
 	    (p (list p))
-	    (q (list q)))
+	    (q (list q)))        
 	(let ((a (list 1 0))
 	      (b (list 0 1))
 	      (g (list (car q) (- (car p))))
@@ -23,31 +23,31 @@
 	      non-periodic-partials
 	      period-initial-p
 	      period-initial-q)
-	  (do ((i 0 (incf i)))
-	      (loop-found)
-	    (progn
-	      (when (> i 0)
-		(push (- (* (car as) (car q)) (car p)) p)
-		(push (/ (- d (* (car p) (car p))) (car q)) q)
-		(when period-started
-		  (setf loop-found (and (= period-initial-p (car p)) (= period-initial-q (car q))))))
-	      (push (floor (+ (car p) qd) (car q)) as)
-	      (push (+ (* (car as) (car a)) (cadr a)) a)
-	      (push (+ (* (car as) (car b)) (cadr b)) b)
-	      (push (+ (* (car as) (car g)) (cadr g)) g)
-	      (push (/ (+ (car p) qd) (car q)) xi)
-	      (push (/ (- (car p) qd) (car q)) cxi)
-	      (when (zerop i)
-		(push (car as) integer-partial))
-	      (when (not period-started)
-		(when (and (> (car xi) 1) (< (car cxi) 0) (< -1 (car cxi)))
-		  (setf period-started t
-			period-initial-p (car p)
-			period-initial-q (car q))))
-	      (if period-started
-		  (push (car as) periodic-partials)
-		  (unless (zerop i)
-		    (push (car as) non-periodic-partials)))))
+          (do ((i 0 (incf i)))
+              (loop-found)
+            (progn
+              (when (> i 0)
+                (push (- (* (car as) (car q)) (car p)) p)
+                (push (/ (- d (* (car p) (car p))) (car q)) q)
+                (when period-started
+                  (setf loop-found (and (= period-initial-p (car p)) (= period-initial-q (car q))))))
+              (push (floor (+ (car p) qd) (car q)) as)
+              (push (+ (* (car as) (car a)) (cadr a)) a)
+              (push (+ (* (car as) (car b)) (cadr b)) b)
+              (push (+ (* (car as) (car g)) (cadr g)) g)
+              (push (/ (+ (car p) qd) (car q)) xi)
+              (push (/ (- (car p) qd) (car q)) cxi)
+              (when (zerop i)
+                (push (car as) integer-partial))
+              (when (not period-started)
+                (when (and (> (car xi) 1) (< (car cxi) 0) (< -1 (car cxi)))
+                  (setf period-started t
+                        period-initial-p (car p)
+                        period-initial-q (car q))))
+              (if period-started
+                  (push (car as) periodic-partials)
+                  (unless (zerop i)
+                    (push (car as) non-periodic-partials)))))
 	  (macrolet ((mlist (sym l)
 		       `(list '(mequal simp) ,sym (cons '(mlist simp) (reverse ,l)))))
 	    (list '(mlist simp)
@@ -147,18 +147,18 @@ this function will search forever."
 		       do (when (or (= qi 1) (= qi -1))
 			    (setf found t)
 			    (if (= (- (* r r) (* d s s)) m)
-				(push (list '(mlist simp)
+				(pushnew (list '(mlist simp)
 					    (list '(mequal simp) x (* f r))
 					    (list '(mequal simp) y (* f s)))
-				      result)
+				      result :test #'equalp)
 				(let ((sols (min-pos-pell-values d -1)))
 				  (when sols
 				    (destructuring-bind (v w) sols
-				      (push (list '(mlist simp)
-						  (list '(mequal simp) x (* f (+ (* r v) (* s w d))))
-						  (list '(mequal simp) y (* f (+ (* r w) (* s v)))))
-					    result))))))))))))
-    (cons '(mlist simp) result)))
+				      (pushnew (list '(mlist simp)
+                                                     (list '(mequal simp) x (* f (+ (* r v) (* s w d))))
+                                                     (list '(mequal simp) y (* f (+ (* r w) (* s v)))))
+                                               result :test #'equalp))))))))))))
+    (cons '(mlist simp) (remove-duplicates result))))
 
 
 

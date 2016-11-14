@@ -21,6 +21,9 @@ load(functs);
 dio_gensym():=if is(dio_solution_parameter='dio_solution_parameter) then (
   dio_solution_parameter:new_variable('integer),dio_solution_parameter)
 else dio_solution_parameter;
+dio_gensym_pos():=if is(dio_pos_solution_parameter='dio_pos_solution_parameter) then (
+  dio_pos_solution_parameter:new_variable('natural_number),dio_pos_solution_parameter)
+else dio_pos_solution_parameter;
 
 diophantine_solve_single_var(dio_eq):=block([sols:solve(dio_eq),result:[]],
   for sol in sols do if integerp(rhs(sol)) then push([sol],result),
@@ -203,13 +206,8 @@ block([sol,result:[],limit,param:dio_gensym()],
 diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
   if d = 0 and e = 0 then (
     diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f))
-  else block([eq:a*x*x+b*x*y+c*y*y+d*x+e*y+f,transforms,new_eq,final_transform,transformed_eq,transformed_sols,eq_sols_rat],
-    transforms:diophantine_compute_transforms_to_pell(eq),
-    final_transform:dio_combine_transforms(transforms),
-    transformed_eq:expand(subst(final_transform,eq)),
-    transformed_sols:diophantine_solve(dio_make_coeffs_integer(transformed_eq)),
-    eq_sols_rat:map(lambda([s],ratsimp(subst(s,final_transform))),transformed_sols),
-    dio_filter_rat_solutions(eq_sols_rat, final_transform)));
+  else block([eq:a*x*x+b*x*y+c*y*y+d*x+e*y+f],
+    dio_solve_annoying_hyperbolic(eq)));
 
 defstruct(pqa(pp,g,b,q));
 do_pqa(p,q,d):=block([result:dio_pqa(p,q,d)],
@@ -266,14 +264,15 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
 dio_solution_magnitude_less_p(s1,s2):=rhs(s1[1])^2+rhs(s1[2])^2 < rhs(s2[1])^2+rhs(s2[2])^2;
 
 diophantine_instantiate_solutions(parametrised_results, nmin, nmax,[rest]):=
-block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(dio_gensym()=i,param_result),i,nmin,nmax)), parametrised_results)))],
+block([sym:if freeof(dio_gensym(), parametrised_results) then dio_gensym_pos() else dio_gensym()],
+block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(sym=i,param_result),i,nmin,nmax)), parametrised_results)))],
   if member('sorted,rest) then
     result_list:sort(result_list,dio_solution_magnitude_less_p),
   if member('integer,rest) then
     result_list:remove_rat_sols(result_list),
   if member('no_eq,rest) then
     result_list:map(lambda([s],[rhs(s[1]),rhs(s[2])]),result_list),
-  result_list);
+  result_list));
 
 diophantine_brute_force(eq,limit,[rest]):=block([coeffs:dio_coeffs(eq),vars:listofvars(eq),sln],
   sln:map(lambda([s],[vars[1]=s[1],vars[2]=s[2]]),apply(dio_brute_force,append(map(rhs,coeffs),[limit], if member('positive,rest) then [true] else []))),
