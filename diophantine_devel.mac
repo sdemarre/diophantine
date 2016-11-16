@@ -81,14 +81,13 @@ find_eq_with_powers():=block([eq:dio_random_eq(10),s,M],
     [eq,counts])
   else [eq,not_interesting]);
 
-
 dio_test():=block([dt:display2d,result],display2d:false,result:batch(rtest_diophantine,test),display2d:dt,result);
 
 matchdeclare(aa,integerp,bb,integerp,ee,all);
-defmatch(zlin, ee^(aa*%n7+bb));
+defmatch(zlin, ee^(aa*dio_gensym_pos()+bb));
 find_all_z_powers_h(expr):=if not atom(expr) then (if zlin(expr)#false then push([aa,bb],all_powers) else (for e in args(expr) do find_all_z_powers_h(e)));
 all_z_powers(top_expr):=(all_powers:[],find_all_z_powers_h(top_expr),listify(setify(all_powers)));
-has_high_z_power(expr):=some(lambda([zp],is(zp[1]>2)),all_z_powers(expr));
+has_high_z_power(expr):=some(lambda([zp],is(zp[1]>4)),all_z_powers(expr));
 
 dio_sol_matrix(solutions,zmin,zmax):=block([num_sol:makelist(ratsimp(subst(dio_gensym()=i,solutions)),i,zmin,zmax)],
   apply(matrix,map(lambda([s],map(integer_solution_p,s)),num_sol)));
@@ -129,13 +128,12 @@ dio_unique_columns(mat):=transpose(apply(matrix,listify(setify(args(transpose(ma
 has_rat_solutions(sol):=block([],
   dio_infinite_solutions(sol) and not every(lambda([s],every(integer_solution_p,s)), makelist(ratsimp(subst(%z1=i,sol)),i,-5,5)));
 dio_find_difficult_eq():=block([result:[],i],
-  for i:1 thru 100000 do block([eq:(-8*y^2)+9*x*y+4*y+6*x^2-8*x+3,time:?get\-internal\-real\-time()],
+  for i:1 thru 1000 do block([eq:dio_random_eq(30)],
     the_eq:eq,
-    print(['i=i,'working_on_eq=eq]),    
+    print(['i=i]),
     block([sol:diophantine_solve(eq)],
-      print(?get\-internal\-real\-time() - time),
       if dio_infinite_solutions(sol) then (
-        if has_high_z_power(sol) then (print('eq_with_high_power=eq),push(eq,result))))),
+        if has_high_z_power(sol) then (print(['eq_with_high_power=eq,all_z_powers(sol)]),push(eq,result))))),
   result);
 
 find_int_powers(transform, vars, min_pell, fund_sol, q, k, L, signs):=block([cx:rhs(fund_sol[1]),cy:rhs(fund_sol[2]),result:[],neg1:signs[1],neg2:signs[2]],
