@@ -128,9 +128,9 @@ dio_unique_columns(mat):=transpose(apply(matrix,listify(setify(args(transpose(ma
 has_rat_solutions(sol):=block([],
   dio_infinite_solutions(sol) and not every(lambda([s],every(integer_solution_p,s)), makelist(ratsimp(subst(%z1=i,sol)),i,-5,5)));
 dio_find_difficult_eq():=block([result:[],i],
-  for i:1 thru 1000 do block([eq:dio_random_eq(30)],
+  for i:1 thru 30000 do block([eq:dio_random_eq(30)],
     the_eq:eq,
-    print(['i=i]),
+    print(['i=i,'eq=eq]),
     block([sol:diophantine_solve(eq)],
       if dio_infinite_solutions(sol) then (
         if has_high_z_power(sol) then (print(['eq_with_high_power=eq,all_z_powers(sol)]),push(eq,result))))),
@@ -218,3 +218,5 @@ dbf(eq,[rest]):=apply(diophantine_brute_force, cons(eq,rest));
 zdis(eq):=dis(eq,0,0,sorted);
 odis(eq):=dis(eq,0,1,sorted);
 modis(eq):=dis(eq,-1,1,sorted);
+/* sort a list of equations which have parametrised solutions according to the multiplier of the parameter in the solution */
+sortbyz(eqs):=map(first,sort(map(lambda([eq],all_z_powers(ds(eq))),eqs),lambda([eqd1,eqd2],eqd1[2][1][1]<eqd2[2][1][1])));
