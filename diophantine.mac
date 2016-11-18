@@ -175,15 +175,16 @@ dio_solve_with_transform(x,y,a,b,c,d,e,f,trfunc):=block([tr_eq,tr_eq_sol,tr,resu
   ratsimp(dio_filter_rat_solutions(result,tr)));
 
 dio_make_b_zero_transform(x,y,a,b,c,d,e,f):=if a=0 then dio_make_b_zero_transform(y,x,c,b,a,e,d,f) else
-block([A,B,C,T,e1,e2,X:gensym("X"),Y:gensym("Y")],
+block([B,C,e1,X:'Xb,Y:'Yb],
   e1:2*a/b, B:ratnum(e1), C:denom(e1),
-  e2:a/B^2, A:ratnum(e2), T:denom(e2),
   [x=1/B*X-C/B*Y,y=Y]);
-dio_make_d_zero_transform(x,y,a,b,c,d,e,f):=block([A,B,C,T,e1,e2,X:gensym("X"),Y:gensym("Y")],
+dio_make_d_zero_transform(x,y,a,b,c,d,e,f):=block([B,C,e1,X:'Xd,Y:'Yd],
   e1:2*a/d, B:ratnum(e1), C:denom(e1),
-  e2:a/B^2, A:ratnum(e2), T:denom(e2),
   [x=1/B*X-C/B,y=Y]);
-dio_make_e_zero_transform(x,y,a,b,c,d,e,f):=dio_make_d_zero_transform(y,x,c,b,a,e,d,f);
+/*dio_make_d_zero_transform(y,x,c,b,a,e,d,f);*/
+dio_make_e_zero_transform(x,y,a,b,c,d,e,f):=block([B,C,e1,X:'Xe,Y:'Ye],
+  e1:2*c/e, B:ratnum(e1), C:denom(e1),
+  [y=1/B*X-C/B,x=Y]);
 dio_make_a_one_transform(x,y,a,b,c,d,e,f):=block([X:gensym("X"),Y:gensym("Y")],
   [x=X/a,y=Y]);
 dio_apply_transform(eq,transform_name):=block([vars:listofvars(eq),coeffs:map(rhs,dio_coeffs(eq)),new_eq,transform],
