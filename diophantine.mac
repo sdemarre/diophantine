@@ -143,7 +143,7 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
       else dio_solve_with_transform(x,y,a,b,c,0,0,f,dio_make_b_zero_transform))
     else 'tbd2)));
 
-dio_infinite_solutions(sol):=not freeof(dio_gensym(),sol);
+dio_infinite_solutions(sol):=not freeof(dio_gensym(),sol) or not freeof(dio_gensym_pos(), sol);
 
 remove_if(pred, list):=block([result:[],e],
   for e in list do if not pred(e) then push(e,result),
