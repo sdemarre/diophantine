@@ -268,8 +268,9 @@ dio_all_pell_solutions(x,y,D,rhs):=block([min_sol:dio_min_pos_pell_solution(x,y,
 
 dio_solution_magnitude_less_p(s1,s2):=rhs(s1[1])^2+rhs(s1[2])^2 < rhs(s2[1])^2+rhs(s2[2])^2;
 
-diophantine_instantiate_solutions(parametrised_results, nmin, nmax,[rest]):=
-block([sym:if freeof(dio_gensym(), parametrised_results) then dio_gensym_pos() else dio_gensym()],
+diophantine_instantiate_solutions(parametrised_results, nmin, [rest]):=
+block([sym:if freeof(dio_gensym(), parametrised_results) then dio_gensym_pos() else dio_gensym(),
+  nmax:if rest#[] and numberp(rest[1]) then rest[1] else nmin],
 block([result_list:ratsimp(apply(append,map(lambda([param_result],makelist(subst(sym=i,param_result),i,nmin,nmax)), parametrised_results)))],
   if member('sorted,rest) then
     result_list:sort(result_list,dio_solution_magnitude_less_p),
