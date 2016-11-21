@@ -639,16 +639,3 @@ y^2-10*x*y-11*y-2*x^2+7*x+13,
 13*y^2-13*x*y-3*y-13*x^2-8*x-10]
 */
 
-/* solve all diophantine equations within limits
-dio_solve_all(limit):=
-block([equations:[]],
-        for a:-limit thru limit do
-          for b:-limit thru limit do
-            for c:-limit thru limit do
-              for d:-limit thru limit do
-                for e:-limit thru limit do
-                  for f:-limit thru limit do
-                    block([eq:a*x*x+b*x*y+c*y*y+d*x+e*y+f],
-                       push(eq,equations)),
-       map(lambda([eq],errcatch(ds(eq))),equations));
-     */

@@ -205,6 +205,20 @@ gen_complex_sols(eq):=block([s:dbs(eq),transform, vars, min_pell, fund_sols, q, 
   result
   );
 
+
+/* solve all diophantine equations within limits */
+dio_solve_all(limit):=
+block([equations:[]],
+        for a:-limit thru limit do
+          for b:-limit thru limit do
+            for c:-limit thru limit do
+              for d:-limit thru limit do
+                for e:-limit thru limit do
+                  for f:-limit thru limit do
+                    block([eq:a*x*x+b*x*y+c*y*y+d*x+e*y+f],
+                       push(eq,equations)),
+                     map(lambda([eq],block([r:errcatch(ds(eq))], if r = [] then [eq,r] else [eq,first(r)])),equations));
+
 /* convenience: aliases */
 dsv(eq):=diophantine_swap_vars(eq);
 dtp(eq):=diophantine_transform_to_pell(eq);
