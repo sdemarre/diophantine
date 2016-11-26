@@ -115,11 +115,23 @@ this function will search forever."
       (psetf ca (mod (+ (* a ca) (* b cb q)) l)
 	     cb (mod (+ (* a cb) (* b ca)) l)))))
 
+(defun all-multiples (l a)
+	  (if (null l)
+	      a
+	      (all-multiples (rest l) (loop for i from 0 to (cdar l) append (mapcar #'(lambda (e) (* (expt (caar l) i) e)) a)))))
+(defun square-divisors (n)
+  (let* ((factors (mapcar #'rest (rest (mcall '$ifactors (abs n)))))
+	 (sq-factors (remove-if #'(lambda (fac-data) (< (cadr fac-data) 2)) factors))
+	 (sq-pows (mapcar #'(lambda (fac-data) (if (evenp (cadr fac-data))
+						   (cons (car fac-data) (/ (cadr fac-data) 2))
+						   (cons (car fac-data) (/ (1- (cadr fac-data)) 2))))
+			  sq-factors)))
+    (all-multiples sq-pows '(1))))
+(defun $square_divisors (n)
+  (cons '(mlist simp) (square-divisors n)))
 (defun pqa-get (pqa var)
   (let ((var-eq-list (find-if #'(lambda (candidate) (eq (second candidate) var)) (rest pqa))))
     (when var-eq-list (rest (third var-eq-list)))))
-(defun $square_divisors (n)
-  (cons '(mlist simp) (loop for f from 1 to (isqrt (abs n)) when (zerop (mod n (* f f))) collect f)))
 (defun min-pos-pell-values (d n)
   (rest (mcall '$map '$rhs (mcall '$dio_min_pos_pell_solution '$t '$u d n))))
 (defun quadratic-congruences (d m l-min l-max)
@@ -137,7 +149,7 @@ this function will search forever."
 ;;  lmm as described in "Solving the generalized Pell equation" 2004 by John P. Robertson, http://www.jpr2718.org/pell.pdf
 (defun $dio_lmm (x y d n)
   (let (result)
-    (loop for f in (rest ($square_divisors n)) do
+    (loop for f in (square-divisors n) do
 	 (let* ((m (/ n (* f f)))
 		(absm (abs m))
 		(limit (/ absm 2)))
