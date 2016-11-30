@@ -151,28 +151,31 @@ this function will search forever."
 	 (let* ((m (/ n (* f f)))
 		(absm (abs m))
 		(limit (/ absm 2)))
-	   (loop for z from (1+ (truncate (- limit))) to (1+ (truncate limit)) do
-		(when (= (mod (* z z) absm) (mod d absm))
-		  (let ((pqa ($dio_pqa z absm d))
-			(found nil))
-		    (loop for qi in (rest (pqa-get pqa '$q))
-		       and r in (cddr (pqa-get pqa '$g))
-		       and s in (cddr (pqa-get pqa '$b))
-		       until found
-		       do (when (or (= qi 1) (= qi -1))
-			    (setf found t)
-			    (if (= (- (* r r) (* d s s)) m)
-				(pushnew (list '(mlist simp)
-					    (list '(mequal simp) x (* f r))
-					    (list '(mequal simp) y (* f s)))
-				      result :test #'equalp)
-				(let ((sols (min-pos-pell-values d -1)))
-				  (when sols
-				    (destructuring-bind (v w) sols
-				      (pushnew (list '(mlist simp)
-                                                     (list '(mequal simp) x (* f (+ (* r v) (* s w d))))
-                                                     (list '(mequal simp) y (* f (+ (* r w) (* s v)))))
-                                               result :test #'equalp))))))))))))
+           (format t " [d=~a, m=~a, range=[~a,~a]]~%" d absm (1+ (truncate (- limit))) (1+ (truncate limit)))
+           (when (mcall '$zn_nth_root d 2 absm)
+            (loop for z from (1+ (truncate (- limit))) to (1+ (truncate limit)) do
+                 (when (= (mod (* z z) absm) (mod d absm))
+                   (format t "  lmm found ~a^2=~a (mod ~a)~%" z d absm)
+                   (let ((pqa ($dio_pqa z absm d))
+                         (found nil))
+                     (loop for qi in (rest (pqa-get pqa '$q))
+                        and r in (cddr (pqa-get pqa '$g))
+                        and s in (cddr (pqa-get pqa '$b))
+                        until found
+                        do (when (or (= qi 1) (= qi -1))
+                             (setf found t)
+                             (if (= (- (* r r) (* d s s)) m)
+                                 (pushnew (list '(mlist simp)
+                                                (list '(mequal simp) x (* f r))
+                                                (list '(mequal simp) y (* f s)))
+                                          result :test #'equalp)
+                                 (let ((sols (min-pos-pell-values d -1)))
+                                   (when sols
+                                     (destructuring-bind (v w) sols
+                                       (pushnew (list '(mlist simp)
+                                                      (list '(mequal simp) x (* f (+ (* r v) (* s w d))))
+                                                      (list '(mequal simp) y (* f (+ (* r w) (* s v)))))
+                                                result :test #'equalp)))))))))))))
     (cons '(mlist simp) (remove-duplicates result))))
 
 
