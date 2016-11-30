@@ -531,6 +531,9 @@ diophantine_solve((-y^2)+4*x*y-4*x^2+2*x-3);
 diophantine_solve(5*y^2+6*x*y+y);
 []$
 
+/* slow while running find_int_powers() */
+diophantine_solve(48*y^2+35*x*y-15*y-21*x^2-47*x+15);
+[]$
 
 /* equations with high (>=4) multipliers for the powers of %n
 [(-13*y^2)-12*x*y+12*y+12*x^2-15*x,
