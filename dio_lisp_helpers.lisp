@@ -218,34 +218,4 @@ this function will search forever."
     (cons '(mlist simp) (reverse result))))
 
 
-;; unmarked = length(integer-powers)
-;; for d in divisors
-;;    for increment from 0 to d-1
-;;       if all-elements-integer(k,d,increment, integer-powers)
-;;          count-marked = mark-all-elements(k,d,increment, integer-powers)
-;;          add-expression-to-result(k,d,increment)
-;;          unmarked -= count-marked
-;;          if unmarked == 0
-;;              return result
 
-
-(defun check-bf-fun (limit &optional pos)
-  (declare (optimize (speed 3) (safety 0))
-           (type (integer -100000000 100000000) limit))
-  (let (result
-	(y-limit (if pos 0 (- limit))))
-    (format t "y-limit = ~a~%" y-limit)
-    (loop for x fixnum from y-limit to limit
-       do (let ((fxy
-		 (the fixnum (+ (the fixnum (* -425 (the fixnum (* x x))))
-				(* 9 (the fixnum (* y-limit y-limit)))
-				(* 42 y-limit)
-				(* 5100 x)
-				-15226))))
-	    (declare (type fixnum fxy))
-	    (loop for y fixnum from y-limit to limit
-	       do (progn
-		    (when (zerop fxy)
-		      (push (list '(mlist simp) x y) result))
-		   (incf fxy (+ (* 2 9 y) 51))))))
-    (cons '(mlist simp) result)))
