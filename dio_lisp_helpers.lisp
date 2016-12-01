@@ -208,15 +208,13 @@ this function will search forever."
   (let ((cx fund-x)
         (cy fund-y)
         result)
-    (flet ((transform-x () (/ (+ (* sign1 cx txx) (* sign2 cy txy) txc) txd))
-           (transform-y () (/ (+ (* sign1 cx tyx) (* sign2 cy tyy) tyc) tyd)))
+    (flet ((transform-x-integer-p () (>= (gcd (+ (* sign1 cx txx) (* sign2 cy txy) txc) txd) txd))
+           (transform-y-integer-p () (>= (gcd (+ (* sign1 cx tyx) (* sign2 cy tyy) tyc) tyd) tyd)))
      (loop for pow from 0 to (1- k) do
-          (let ((actual-x (transform-x))
-                (actual-y (transform-y)))
-            (when (and (integerp actual-x) (integerp actual-y))
-              (push pow result))
-            (psetf cx (mod (+ (* q cy min-pell-y) (* cx min-pell-x)) l)
-                   cy (mod (+ (* cy min-pell-x) (* cx min-pell-y)) l)))))
+          (when (and (transform-x-integer-p) (transform-y-integer-p))
+            (push pow result))
+          (psetf cx (mod (+ (* q cy min-pell-y) (* cx min-pell-x)) l)
+                 cy (mod (+ (* cy min-pell-x) (* cx min-pell-y)) l))))
     (cons '(mlist simp) (reverse result))))
 
 
