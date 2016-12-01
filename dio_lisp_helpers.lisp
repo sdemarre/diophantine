@@ -62,28 +62,6 @@
 		  (mlist '$xi xi)
 		  (mlist '$cxi cxi)))))))
 
-(defun $dio_find_1 (a b c cf)
-  (let ((cf (rest cf)))
-    (flet ((p (y z)
-	     (let ((r (+ (* a y y) (* b y z) (* c z z))))
-	       (format t "p(~a,~a)=~a~%" y z r)
-	       r)))
-      (let* ((result (list '(mlist simp)))
-	     (ynm1 1)
-	     (znm1 0)
-	     (yn (car cf))
-	     (zn 1))
-	(loop for cn in (rest cf) do (progn
-				       (when (= 1 (p yn zn))
-					 (setf result (list '(mlist simp) yn zn))
-					 (return result))
-				       (format t "cn=~a~%" cn)
-				       (psetf yn (+ ynm1 (* cn yn))
-					      zn (+ znm1 (* cn zn))
-					      ynm1 yn
-					      znm1 zn)))
-	result))))
-
 (defun $dio_point_ranges (point-data)
   (let ((point-data (rest (mapcar #'rest point-data))))
     (list '(mlist simp)
@@ -177,22 +155,6 @@ this function will search forever."
                                                       (list '(mequal simp) y (* f (+ (* r w) (* s v)))))
                                                 result :test #'equalp)))))))))))))
     (cons '(mlist simp) (remove-duplicates result))))
-
-
-
-(defun dio_integer_pell_array (px py lx ly d k x-trans-coeffs y-trans-coeffs)
-  (destructuring-bind (txx txy txc txl) x-trans-coeffs
-    (destructuring-bind (tyx tyy tyc tyl) y-trans-coeffs
-      (let ((cx lx)
-            (cy ly)
-            result)
-        (flet ((xt-int-p () (zerop (mod (+ (* txx cx) (* txy cy) txc) txl)))
-               (yt-int-p () (zerop (mod (+ (* tyx cy) (* tyy cy) tyc) tyl))))
-          (loop for p from 0 to (1- k) do (progn
-                                            (when (and (xt-int-p) (yt-int-p)) (push p result))
-                                            (psetf cx (+ (* cx px) (* cy py d))
-                                                   cy (+ (* cy px) (* cx py))))))
-	(reverse result)))))
 
 (defun check-mod-solution (m a b c d e f)
   (loop for x from 0 below m do
