@@ -149,6 +149,7 @@ block([rtx: rat(rhs(transform[1])),
   tyy:coeff(rty,vars[2],1)*tyd,
   tyc:subst([vars[1]=0,vars[2]=0],rty)*tyd,
   ?$find_int_powers_lisp(?cadr(txx), ?cadr(txy), ?cadr(txc), ?cadr(txd), ?cadr(tyx), ?cadr(tyy), ?cadr(tyc), ?cadr(tyd), rhs(min_pell[1]), rhs(min_pell[2]), rhs(fund_sol[1]), rhs(fund_sol[2]), q, k, L, signs[1], signs[2]));
+  ?$find_int_powers_lisp(txx, txy, txc, txd, tyx, tyy, tyc, tyd, rhs(min_pell[1]), rhs(min_pell[2]), rhs(fund_sol[1]), rhs(fund_sol[2]), q, k, L, signs[1], signs[2]));
 
 find_int_powers(transform, vars, min_pell, fund_sol, q, k, L, signs):=block([cx:rhs(fund_sol[1]),cy:rhs(fund_sol[2]),result:[],neg1:signs[1],neg2:signs[2]],
   for pow:0 thru k-1 do block([actual:subst([vars[1]=neg1*cx,vars[2]=neg2*cy],transform)],

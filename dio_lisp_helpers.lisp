@@ -227,18 +227,24 @@ this function will search forever."
 		    (return))))))
     (cons '(mlist simp) (reverse result))))
 
+(defun extract-number (n)
+  (if (numberp n)
+      n
+      (cadr n)))
 (defun $find_int_powers_lisp (txx txy txc txd tyx tyy tyc tyd min-pell-x min-pell-y fund-x fund-y q k l sign1 sign2)
-  (let ((cx fund-x)
-        (cy fund-y)
-        result)
-    (flet ((transform-x-integer-p () (>= (gcd (+ (* sign1 cx txx) (* sign2 cy txy) txc) txd) txd))
-           (transform-y-integer-p () (>= (gcd (+ (* sign1 cx tyx) (* sign2 cy tyy) tyc) tyd) tyd)))
-     (loop for pow from 0 to (1- k) do
-          (when (and (transform-x-integer-p) (transform-y-integer-p))
-            (push pow result))
-          (psetf cx (mod (+ (* q cy min-pell-y) (* cx min-pell-x)) l)
-                 cy (mod (+ (* cy min-pell-x) (* cx min-pell-y)) l))))
-    (cons '(mlist simp) (reverse result))))
+  (destructuring-bind (txx txy txc txd tyx tyy tyc tyd)
+      (mapcar #'extract-number (list txx txy txc txd tyx tyy tyc tyd))
+    (let ((cx fund-x)
+          (cy fund-y)
+          result)
+      (flet ((transform-x-integer-p () (>= (gcd (+ (* sign1 cx txx) (* sign2 cy txy) txc) txd) txd))
+             (transform-y-integer-p () (>= (gcd (+ (* sign1 cx tyx) (* sign2 cy tyy) tyc) tyd) tyd)))
+        (loop for pow from 0 to (1- k) do
+             (when (and (transform-x-integer-p) (transform-y-integer-p))
+               (push pow result))
+             (psetf cx (mod (+ (* q cy min-pell-y) (* cx min-pell-x)) l)
+                    cy (mod (+ (* cy min-pell-x) (* cx min-pell-y)) l))))
+      (cons '(mlist simp) (reverse result)))))
 
 
 
