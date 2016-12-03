@@ -105,16 +105,6 @@ dio_rat_solutions(pell_transform, vars, pell_min_sol, fund_sol, q, k, L):=block(
     push([vars[1]=-(ppq*fpq+pmq*fmq)/2, vars[2]=-(ppq*fpq-pmq*fmq)/2/sqrt(q)],result)),
   dio_subst(result,pell_transform));
 
-dio_basic_solution(eq):=block([pell_transform:diophantine_transform_to_pell(eq),vars,coeffs,pell_min_sol,fund_sol,k,f,L,result:[],q],
-  L:apply(lcm,map(denom, map(rhs, pell_transform[1]))),
-  vars:listofvars(pell_transform[2]),
-  coeffs:[coeff(pell_transform[2],vars[1],2),coeff(pell_transform[2],vars[2],2),subst([vars[1]=0,vars[2]=0],pell_transform[2])],
-  q:-coeffs[1]*coeffs[2],
-  pell_min_sol: if abs(coeffs[1]) = 1 then dio_min_pos_pell_solution(vars[1],vars[2],q,1) else dio_min_pos_pell_solution(vars[2],vars[1],q,1),
-  fund_sol: if abs(coeffs[1]) = 1 then dio_lmm(vars[1],vars[2],q,-coeffs[1]*coeffs[3]) else dio_lmm(vars[2],vars[1],q,-coeffs[2]*coeffs[3]),
-  k:if L=1 then 1 else dio_compute_k_power(rhs(pell_min_sol[1]),rhs(pell_min_sol[2]),q,L),
-  [pell_transform[1],vars,pell_min_sol,fund_sol,q,k,L]);
-
 dio_unfiltered_solutions(eq):=block([transform, vars, min_pell, fund_sols, q, k, L],
   [transform, vars, min_pell, fund_sols, q, k, L]:dio_basic_solution(eq),
   makelist(block([pp:subst(min_pell,(vars[1]+sqrt(q)*vars[2])^dio_gensym()),
@@ -136,20 +126,6 @@ dio_find_difficult_eq([rest]):=block([result:[],i,count:if is(length(rest)>=1) t
         if has_high_z_power(sol) then (print(['eq_with_high_power=eq,all_z_powers(sol)]),push(eq,result))))),
   result);
 
-find_int_powers_fast(transform, vars, min_pell, fund_sol, q, k, L, signs):=
-block([rtx: rat(rhs(transform[1])),
-  rty: rat(rhs(transform[2])),
-  txx, txy, txc, txd, tyx, tyy, tyc, tyd],
-  txd:denom(rtx),
-  tyd:denom(rty),
-  txx:coeff(rtx,vars[1],1)*txd,
-  txy:coeff(rtx,vars[2],1)*txd,
-  txc:subst([vars[1]=0,vars[2]=0],rtx)*txd,
-  tyx:coeff(rty,vars[1],1)*tyd,
-  tyy:coeff(rty,vars[2],1)*tyd,
-  tyc:subst([vars[1]=0,vars[2]=0],rty)*tyd,
-  ?$find_int_powers_lisp(txx, txy, txc, txd, tyx, tyy, tyc, tyd, rhs(min_pell[1]), rhs(min_pell[2]), rhs(fund_sol[1]), rhs(fund_sol[2]), q, k, L, signs[1], signs[2]));
-
 find_int_powers(transform, vars, min_pell, fund_sol, q, k, L, signs):=block([cx:rhs(fund_sol[1]),cy:rhs(fund_sol[2]),result:[],neg1:signs[1],neg2:signs[2]],
   for pow:0 thru k-1 do block([actual:subst([vars[1]=neg1*cx,vars[2]=neg2*cy],transform)],
     if integerp(rhs(actual[1])) and integerp(rhs(actual[2])) then (
@@ -165,46 +141,6 @@ make_int_power_tables(eq):=block([s:dio_basic_solution(eq)],
 make_int_power_exprs(eq):=block([t:make_int_power_tables(eq), k:dbs(eq)[6]],
   [makelist(find_min_coverage(i,k,listify(divisors(k))),i,t[1]),
   makelist(find_min_coverage(i,k,listify(divisors(k))),i,t[2])]);
-
-gen_annoying_sols(transform, vars, min_pell, fund_sols, q, int_power_exprs):=
-block([ppq:subst(min_pell,vars[1]+sqrt(q)*vars[2])^dio_gensym_pos(),
-  pmq:subst(min_pell,vars[1]-sqrt(q)*vars[2])^dio_gensym_pos(),
-  result:[],pp_int_power_exprs,pm_int_power_exprs,mp_int_power_exprs,mm_int_power_exprs],
-  [pp_int_power_exprs,pm_int_power_exprs,mp_int_power_exprs,mm_int_power_exprs]:int_power_exprs,
-  for fund_sol in fund_sols do
-  block([lpq:subst(fund_sol, vars[1]+sqrt(q)*vars[2]),
-         lmq:subst(fund_sol, vars[1]-sqrt(q)*vars[2]),
-         pp_pow_exprs:pop(pp_int_power_exprs),
-         pm_pow_exprs:pop(pm_int_power_exprs),
-         mp_pow_exprs:pop(mp_int_power_exprs),
-         mm_pow_exprs:pop(mm_int_power_exprs)],
-      for pow_expr in pp_pow_exprs do block([m,p,v1,v2],
-        [m,p]:pow_expr,
-        v1:subst(dio_gensym_pos()=m*dio_gensym_pos()+p,(ppq*lpq+pmq*lmq)/2),
-        v2:subst(dio_gensym_pos()=m*dio_gensym_pos()+p,(ppq*lpq-pmq*lmq)/2/sqrt(q)),
-        push(subst([vars[1]=v1, vars[2]=v2], transform), result)),
-      for pow_expr in pm_pow_exprs do block([m,p,v1,v2],
-        [m,p]:pow_expr,
-        v1:subst(dio_gensym_pos()=m*dio_gensym_pos()+p,(ppq*lpq+pmq*lmq)/2),
-        v2:subst(dio_gensym_pos()=m*dio_gensym_pos()+p,(ppq*lpq-pmq*lmq)/2/sqrt(q)),
-        push(subst([vars[1]=v1, vars[2]=-v2], transform), result)),
-      for pow_expr in mp_pow_exprs do block([m,p,v1,v2],
-        [m,p]:pow_expr,
-        v1:subst(dio_gensym_pos()=m*dio_gensym_pos()+p,(ppq*lpq+pmq*lmq)/2),
-        v2:subst(dio_gensym_pos()=m*dio_gensym_pos()+p,(ppq*lpq-pmq*lmq)/2/sqrt(q)),
-        push(subst([vars[1]=-v1, vars[2]=v2], transform), result)),
-      for pow_expr in mm_pow_exprs do block([m,p,v1,v2],
-        [m,p]:pow_expr,
-        v1:subst(dio_gensym_pos()=m*dio_gensym_pos()+p,(ppq*lpq+pmq*lmq)/2),
-        v2:subst(dio_gensym_pos()=m*dio_gensym_pos()+p,(ppq*lpq-pmq*lmq)/2/sqrt(q)),
-        push(subst([vars[1]=-v1, vars[2]=-v2], transform), result))),
-    result);
-dio_solve_annoying_hyperbolic(eq):=block([transform, vars, min_pell, fund_sols, q, k, L, fund_sol, int_power_lists, int_powers, int_power_exprs, kdivs],
-  [transform, vars, min_pell, fund_sols, q, k, L]:dio_basic_solution(eq),
-  kdivs:listify(divisors(k)),
-  int_power_lists:makelist(makelist(find_int_powers_fast(transform, vars, min_pell, fund_sol, q, k, L, m), fund_sol, fund_sols), m, [[1,1],[1,-1],[-1,1],[-1,-1]]),
-  int_power_exprs:makelist(makelist(find_min_coverage(int_powers, k, kdivs), int_powers, int_power_list), int_power_list, int_power_lists),
-  gen_annoying_sols(transform, vars, min_pell, fund_sols, q, int_power_exprs));
 
 gen_complex_sols(eq):=block([s:dbs(eq),transform, vars, min_pell, fund_sols, q, k, L, result:[], fund_sol],
   [transform, vars, min_pell, fund_sols, q, k, L]:s,

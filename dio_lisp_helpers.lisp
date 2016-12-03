@@ -116,9 +116,9 @@ this function will search forever."
 	     cb (mod (+ (* a cb) (* b ca)) l)))))
 
 (defun all-multiples (l a)
-	  (if (null l)
-	      a
-	      (all-multiples (rest l) (loop for i from 0 to (cdar l) append (mapcar #'(lambda (e) (* (expt (caar l) i) e)) a)))))
+  (if (null l)
+      a
+      (all-multiples (rest l) (loop for i from 0 to (cdar l) append (mapcar #'(lambda (e) (* (expt (caar l) i) e)) a)))))
 (defun square-divisors (n)
   (let* ((factors (mapcar #'rest (rest (mcall '$ifactors (abs n)))))
 	 (sq-factors (remove-if #'(lambda (fac-data) (< (cadr fac-data) 2)) factors))
@@ -163,33 +163,31 @@ this function will search forever."
 	 (let* ((m (/ n (* f f)))
 		(absm (abs m))
 		(limit (/ absm 2)))
-           (format t " [d=~a, m=~a, range=[~a,~a]]~%" d absm (1+ (truncate (- limit))) (1+ (truncate limit)))
 	   (let ((qroots (mcall '$zn_nth_root d 2 absm)))
-	    (when qroots
-	      (let ((qgs (quadratic-congruences d absm qroots (1+ (truncate (- limit))) (1+ (truncate limit)))))
-		(loop for z in qgs do
-		     (when (= (mod (* z z) absm) (mod d absm))
-		       (format t "  lmm found ~a^2=~a (mod ~a)~%" z d absm)
-		       (let ((pqa ($dio_pqa z absm d))
-			     (found nil))
-			 (loop for qi in (rest (pqa-get pqa '$q))
-			    and r in (cddr (pqa-get pqa '$g))
-			    and s in (cddr (pqa-get pqa '$b))
-			    until found
-			    do (when (or (= qi 1) (= qi -1))
-				 (setf found t)
-				 (if (= (- (* r r) (* d s s)) m)
-				     (pushnew (list '(mlist simp)
-						    (list '(mequal simp) x (* f r))
-						    (list '(mequal simp) y (* f s)))
-					      result :test #'equalp)
-				     (let ((sols (min-pos-pell-values d -1)))
-				       (when sols
-					 (destructuring-bind (v w) sols
-					   (pushnew (list '(mlist simp)
-							  (list '(mequal simp) x (* f (+ (* r v) (* s w d))))
-							  (list '(mequal simp) y (* f (+ (* r w) (* s v)))))
-						    result :test #'equalp)))))))))))))))
+	     (when qroots
+	       (let ((qgs (quadratic-congruences d absm qroots (1+ (truncate (- limit))) (1+ (truncate limit)))))
+		 (loop for z in qgs do
+		      (when (= (mod (* z z) absm) (mod d absm))
+			(let ((pqa ($dio_pqa z absm d))
+			      (found nil))
+			  (loop for qi in (rest (pqa-get pqa '$q))
+			     and r in (cddr (pqa-get pqa '$g))
+			     and s in (cddr (pqa-get pqa '$b))
+			     until found
+			     do (when (or (= qi 1) (= qi -1))
+				  (setf found t)
+				  (if (= (- (* r r) (* d s s)) m)
+				      (pushnew (list '(mlist simp)
+						     (list '(mequal simp) x (* f r))
+						     (list '(mequal simp) y (* f s)))
+					       result :test #'equalp)
+				      (let ((sols (min-pos-pell-values d -1)))
+					(when sols
+					  (destructuring-bind (v w) sols
+					    (pushnew (list '(mlist simp)
+							   (list '(mequal simp) x (* f (+ (* r v) (* s w d))))
+							   (list '(mequal simp) y (* f (+ (* r w) (* s v)))))
+						     result :test #'equalp)))))))))))))))
     (cons '(mlist simp) (remove-duplicates result))))
 
 (defun check-mod-solution (m a b c d e f)
@@ -244,6 +242,7 @@ this function will search forever."
                (push pow result))
              (psetf cx (mod (+ (* q cy min-pell-y) (* cx min-pell-x)) l)
                     cy (mod (+ (* cy min-pell-x) (* cx min-pell-y)) l))))
+      (format t "found int powers->~a~%" result)
       (cons '(mlist simp) (reverse result)))))
 
 
