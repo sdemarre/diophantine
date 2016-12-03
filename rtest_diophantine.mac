@@ -567,7 +567,13 @@ ratsimp(diophantine_solve(5*n^2+2*n+1=y^2));
 
 /* ridiculously slow while finding quadratic congruences, and even worse when checking for integer solutions
 currently takes about half an hour and 2.5Gb to compute on a i7 6700  with sbcl
+due to 240 fundamental solutions
 150*y^2-47*x*y-107*y-196*x^2-18*x+78 */
+
+/* takes 30 seconds to solve, even though ds(dtp(eq))->[] in a blink of an eye.
+why ?(-359*y^2)+135*x*y-197*y+298*x^2+152*x+328 */
+
+/* interesting example with 240 fundamental solutions (-48*y^2)-13*x*y+16*y+44*x^2-28*x+20*/
 
 /* (-113*y^2)+15*x*y-75*y+141*x^2+22*x+78  --> 124 seconds on i7 6700 */
 
