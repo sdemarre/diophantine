@@ -242,7 +242,7 @@ this function will search forever."
                (push pow result))
              (psetf cx (mod (+ (* q cy min-pell-y) (* cx min-pell-x)) l)
                     cy (mod (+ (* cy min-pell-x) (* cx min-pell-y)) l))))
-      (format t "found int powers->~a~%" result)
+      ;(format t "found int powers->~a~%" result)
       (cons '(mlist simp) (reverse result)))))
 
 
