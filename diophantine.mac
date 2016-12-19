@@ -82,9 +82,9 @@ diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*
       if iroots[1]=iroots[2] then
       dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots])
       else
-      append(
+      remove_duplicates(append(
         dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]),
-        dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots])))));
+        dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]))))));
 
 diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qcdqae],
   if a=0 then return(diophantine_solve_parabolic(y,x,c,b,a,e,d,f)),
