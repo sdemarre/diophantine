@@ -402,11 +402,29 @@ nested_sort (l) :=
     then sort (map (lambda ([l1], if listp(l1) then sort(l1) else l1), l))
     else l;
 
-diophantine_solve1(dio_eq):=if not atom(dio_eq) and op(dio_eq) = "=" then diophantine_solve1(lhs(dio_eq)-rhs(dio_eq)) else
-block([vars:listofvars(dio_eq)],
+
+dio_is_product(expr):=
+not atom(expr)
+and (operatorp(expr,"*")
+  or (operatorp(expr,"-") and block([a:args(expr)], length(a) = 1 and dio_is_product(a[1]))));
+dio_remove_powers(expr):=if not atom(expr) and operatorp(expr,"^") then args(expr)[1] else expr;
+/* assumes dio_is_product(expr)*/
+dio_factors(expr):=if operatorp(expr,"*") then map(dio_remove_powers,args(expr)) else dio_factors(args(expr)[1]);
+dio_complete_partial_solution(solution, target_vars):=block([vars:listofvars(solution)],
+  if not member(target_vars[1], vars) then map(lambda([s],[target_vars[1] = dio_gensym(), s[1]]),solution)
+  elseif not member(target_vars[2], vars) then map(lambda([s],[target_vars[2] = dio_gensym(), s[1]]),solution)
+  else solution);
+
+dio_solve_factored(factored_eq):=block([individual_solutions:map(diophantine_solve,dio_factors(factored_eq)),
+                                         vars:listofvars(factored_eq)],
+  apply(append,makelist(dio_complete_partial_solution(solution,vars),solution, remove_if(emptyp,individual_solutions))));
+
+diophantine_solve1(dio_eq):=if not atom(dio_eq) and operatorp(dio_eq,"=") then diophantine_solve1(lhs(dio_eq)-rhs(dio_eq)) else
+block([vars:listofvars(dio_eq),factored_eq:factor(dio_eq)],
   if length(vars) > 2 then error (dio_error_2_vars, vars)
   elseif length(vars) = 1 then return(diophantine_solve_single_var(dio_eq))
-  elseif length(vars) = 0 then error(dio_error_no_unknowns),
+  elseif length(vars) = 0 then return([])
+  elseif dio_is_product(factored_eq) then return(dio_solve_factored(factored_eq)),
   block([x:vars[1],y:vars[2]],
     if (hipow(dio_eq, x)>2 or hipow(dio_eq, y)>2) then
       error(dio_error_hi_pow)
