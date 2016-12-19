@@ -212,8 +212,8 @@ diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f):=block(
     dtp:diophantine_transform_to_pell(eq),
     if perfect_squarep(abs(coeff(dtp[2],listofvars(dtp[2])[2],2))) then block([s:diophantine_solve(dtp[2])],
       remove_if_not(integer_solution_p, dio_subst(s,dtp[1]))
-      ) else (
-      dio_solve_difficult_hyperbolic(eq))));
+      ) else block([],
+      if length(diophantine_solve(dtp[2])) # 0 then dio_solve_difficult_hyperbolic(eq) else [])));
 
 dio_gen_complex_sols(transform, vars, min_pell, fund_sols, q, int_power_exprs):=
 block([ppq:subst(min_pell,vars[1]+sqrt(q)*vars[2])^dio_gensym_pos(),
