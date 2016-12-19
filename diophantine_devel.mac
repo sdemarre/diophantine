@@ -185,3 +185,5 @@ odis(eq):=dis(eq,0,sorted);
 modis(eq):=dis(eq,-1,sorted);
 /* sort a list of equations which have parametrised solutions according to the multiplier of the parameter in the solution */
 sortbyz(eqs):=map(first,sort(map(lambda([eq],all_z_powers(ds(eq))),eqs),lambda([eqd1,eqd2],eqd1[2][1][1]<eqd2[2][1][1])));
+di():=display2d:imaxima;
+df():=display2d:false;
