@@ -87,25 +87,26 @@ diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*
         dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots])))));
 
 diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qcdqae],
-  ag:abs(a/g),
+  if a=0 then return(diophantine_solve_parabolic(y,x,c,b,a,e,d,f)),
+  g:g*signum(a),
+  ag:a/g,
   bg:b/g,
-  cg:abs(c/g),
+  cg:c/g,
   qa:sqrt(ag),
-  if a = 0 then return([]),
   qc:sqrt(cg)*signum(b/a),
   qcdqae:qc*d-qa*e,
-  if qcdqae = 0 then block([u,usols],
+  if qcdqae = 0 then block([u,usols], /* two parallel lines */
     usols:solve(qa*g*u^2+d*u+qa*f,u),
     block([result:[]],
       for us in usols do block([u:-rhs(us)],
         if integerp(u) then block([ps:diophantine_solve_linear(x,y,qa,qc,u)],
           if not emptyp(ps) then push(ps[1], result))),
       result))
-  else block([un:abs(qcdqae),u,result:[]],
-    for u:0 thru un do block(
-      if mod(qa*g*u^2+d*u+qa*f,qc*d-qa*e) = 0 then block([
-        xv:-1*qc*g*qcdqae*dio_gensym()^2-(e+2*qc*g*u)*dio_gensym()-(qc*g*u^2+e*u+qc*f)/qcdqae,
-        yv:qa*g*qcdqae*dio_gensym()^2+(d+2*qa*g*u)*dio_gensym()+(qa*g*u^2+d*u+qa*f)/qcdqae],
+  else block([un:abs(qcdqae) - 1,ui,result:[]], /* a parabola */
+    for ui:0 thru un do block(
+      if mod(qa*g*ui^2+d*ui+qa*f,qcdqae) = 0 and mod(qc*g*ui^2+e*ui+qc*f,qcdqae) = 0 then block([
+        xv:-1*qc*g*qcdqae*dio_gensym()^2-(e+2*qc*g*ui)*dio_gensym()-(qc*g*ui^2+e*ui+qc*f)/qcdqae,
+        yv:qa*g*qcdqae*dio_gensym()^2+(d+2*qa*g*ui)*dio_gensym()+(qa*g*ui^2+d*ui+qa*f)/qcdqae],
         push([x = xv, y = yv], result))),
     reverse(result)));
 
