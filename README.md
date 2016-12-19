@@ -34,7 +34,7 @@ Alternatively, if you're using Robert Dodier's [asdf loader](https://github.com/
 	(%o2) [[x = 11*%z1 - 3,y = 9*%z1 - 2]]
 ```
 
-The result is always a (possibly empty) list of values. When there are infinitely many solutions, the solution contains a %z1, which means "any integer". Some equations have several sets of those, e.g.
+The result is always a (possibly empty) list of solutions. When there are infinitely many solutions, solutions use a parameter %z1 or %n1, which means "any integer" or "any natural number" respectively. Some equations have several sets of those, e.g.
 
 ```
 	(%i3) diophantine_solve(18*y^2-24*x*y+7*y+8*x^2+5*x+16);
@@ -42,7 +42,7 @@ The result is always a (possibly empty) list of values. When there are infinitel
 	       [x = (-174*%z1^2)+41*%z1-4,y = (-116*%z1^2)+37*%z1-4]]
 ```
 
-Generating some specific values when the solution contains %z1 can be done like this
+Generating some specific values when the solution contains such a parameter can be done like this
 
 ```
 	(%i4) diophantine_solve(3*x+2*y-8);
@@ -56,8 +56,6 @@ Generating some specific values when the solution contains %z1 can be done like 
 ## Limitations
 
 The test file (rtest_diophantine.mac) contains possibly interesting examples and examples that show the following issues:
-* Some solutions show up more than once in the set of solutions (both for equations with finite and infinite solutions).
-* Sometimes, rational solutions are given, they should be filtered out
 * Even apparently simple equations can take a very long time to solve.
 
 ## Tests

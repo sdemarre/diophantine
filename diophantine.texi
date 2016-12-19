@@ -49,6 +49,6 @@ Computes solutions for the @code{equation}. The result is always a list, which c
 
 @deffn {diophantine_instantiate_solutions} (@var{solution}, @var{param_first}, [@var{param_last}, @var{option}])
 
-Given a parametrized @code{solution} from @code{diophantine_solve}, will compute all the actual solutions, with the parameter varying from @code{param_first} to @code{param_last} (which defaults to @code{param_first}). If @code{option} is @code{'sorted}, the list of solutions will be sorted by increasing (sum of the squares of the values).
+Given a parametrized @code{solution} from @code{diophantine_solve}, will compute all the actual solutions, with the parameter varying from @code{param_first} to @code{param_last} (which defaults to @code{param_first}). If @code{option} is @code{'sorted}, the list of solutions will be sorted by increasing (sum of the squares of the values). 
 
 @end deffn
