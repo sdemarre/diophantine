@@ -1,9 +1,21 @@
 /*
-solves linear and quadratic diophantine equations with constant integer coefficients.
-based on dario alpern's solution, see https://www.alpertron.com.ar/QUAD.HTM
+solves linear and quadratic diophantine equations with constant integer coefficients:
+  a*x^2 + b*x*y + c*y^2 + d*x + e*y + f = 0
+
+depending on the coefficients, different solution techniques are used:
+  * dario alpern's solution, see https://www.alpertron.com.ar/QUAD.HTM is used for the following cases:
+    - linear case: a=b=c=0
+    - simple hyperbolic case: a=c=0, b#0
+    - elliptic case: b^2 - 4*a*c < 0
+    - parabolic case: b^2 - 4*ac = 0
+  * John P. Robertson's paper "Solving the equation  a*x^2 + b*x*y + c*y^2 + d*x + e*y + f = 0", available at http://www.jpr2718.org/ax2p.pdf
+    - hyperbolic case: b^2 - 4*a*c > 0
+
 usage:
   load(diophantine);
-  diophantine_solve(3*x^2+2*y-3);
+  diophantine_solve(equation);
+
+
 */
 
 dio_error_2_vars:"Can only solve equations in 2 unknowns, found";
@@ -25,6 +37,7 @@ dio_gensym_pos():=if is(dio_pos_solution_parameter='dio_pos_solution_parameter) 
   dio_pos_solution_parameter:new_variable('natural_number),dio_pos_solution_parameter)
 else dio_pos_solution_parameter;
 
+/* solve an equation with only one unknown */
 diophantine_solve_single_var(dio_eq):=block([sols:solve(dio_eq),result:[]],
   for sol in sols do if integerp(rhs(sol)) then push([sol],result),
   result);
@@ -37,6 +50,7 @@ dio_gen_euclid(d,e):=block([v:[0,1,e],u:[1,0,d],t:0,q:0],
     v:t),
   [u,v]);
 
+/* solves a linear diophantine equation, of the form d*x+e*y+f=0 */
 diophantine_solve_linear(x,y,d,e,f):=block(
   if (d = 0 and e # 0) then
     block(if (integerp(f/e)) then [[y=-f/e]])
@@ -55,12 +69,17 @@ diophantine_solve_linear(x,y,d,e,f):=block(
         if (xl<0 and yl<0) then block(xl:-xl,yl:-yl),
         [[x=xi+n*xl,y=yi+n*yl]]))));
 
+/* search through vals, finding values which make xexpr and yexpr integer.
+  xepxr and yexpr are equations with lhs a variable, rhs an expression with parameter p.
+  vals is a list whose first element is p, second element a list of candidate values for p. */
 dio_integer_expressions(xexpr, yexpr, vals):=block([_e, result:[]],
   for _e in first(rest(vals)) do block([sx:subst(first(vals)=_e, xexpr), sy:subst(first(vals)=_e, yexpr)],
     if integerp(rhs(sx)) and integerp(rhs(sy)) then
     push([sx, sy], result)),
   reverse(result));
 
+/* solves the simple hyperbolic case: b*x*y + d*x + e*y + f = 0.
+   it is named simple because there is no x^2 or y^2 component */
 diophantine_solve_simple_hyperbolic(x, y, b, d, e, f):=block([result:[]],
   if (d*e-b*f=0) then block(
     if integerp(e/b) then push([x = -e/b, y = dio_gensym()],result),
@@ -71,6 +90,7 @@ diophantine_solve_simple_hyperbolic(x, y, b, d, e, f):=block([result:[]],
       dio_integer_expressions(x = (v-e)/b, y = ((d*e-b*f)/v-d)/b, [v, divs]),
       dio_integer_expressions(x = (-v-e)/b, y = ((-d*e+b*f)/v-d)/b, [v, divs]))));
 
+/* solves the elliptic case: b^2-4*a*c < 0 */
 diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*c)*x^2+2*(b*e-2*c*d)*x+(e^2-4*c*f),x), iroots],
   if length(roots) = 0 then return([])
   else block([roots:if length(roots)=1 then [roots[1],roots[1]] else roots],
@@ -86,6 +106,7 @@ diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*
         dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]),
         dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]))))));
 
+/* solves the parabolic case: b^2-4*a*c=0 */
 diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qcdqae],
   if a=0 then return(diophantine_solve_parabolic(y,x,c,b,a,e,d,f)),
   g:g*signum(a),
@@ -110,6 +131,7 @@ diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,
         push([x = xv, y = yv], result))),
     reverse(result)));
 
+/* solves the hyperbolic homogenous case: b^2-4*a*c>0 and d=e=0 */
 diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
   if a = 0 then
   diophantine_solve_hyperbolic_homogenous(y,x,c,b,a,f)
@@ -144,29 +166,38 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
       else dio_solve_with_transform(x,y,a,b,c,0,0,f,dio_make_b_zero_transform))
     else 'tbd2)));
 
+/* check if a solution is parametrised, i.e. describes an infinite number of solutions */
 dio_infinite_solutions(sol):=not freeof(dio_gensym(),sol) or not freeof(dio_gensym_pos(), sol);
 
+/* remove elements from a list, based on a predicate */
 remove_if(pred, list):=block([result:[],e],
   for e in list do if not pred(e) then push(e,result),
   reverse(result));
 
+/* remove elements from a list, based on a predicate */
 remove_if_not(pred, list):=block([result:[],e],
   for e in list do if pred(e) then push(e,result),
   reverse(result));
 
+/* remove duplicates from a list */
 remove_duplicates(l):=listify(setify(l));
 
+/* check if a solution is integer */
 integer_solution_p(s):=integerp(rhs(s[1])) and integerp(rhs(s[2]));
 
+/* removes rational solutions from a list of solutions */
 remove_rat_sols(s):=remove_if_not(integer_solution_p, s);
 
+/* substitute a solution into an equation. */
 dio_subst(sols,eq):=map(lambda([s],subst(s,eq)),sols);
 
+/* computes the a,b,c,d,e,f coefficients of an equation of the form a*x^2 + b*x*y + c*y^2 + d*x + e*y + f = 0 */
 dio_coeffs(eq):=block([vars:listofvars(eq)],
   if length(vars)=1 then vars:[vars[1],gensym()],
   if op(eq)="=" then eq:lhs(eq)-rhs(eq),
   ['a=coeff(eq,vars[1],2),'b=coeff(coeff(eq,vars[2]),vars[1]),'c=coeff(eq,vars[2],2),'d=coeff(coeff(eq,vars[1]),vars[2],0),'e=coeff(coeff(eq,vars[2]),vars[1],0),'f=coeff(coeff(eq,vars[1],0),vars[2],0)]);
 
+/* solves the equation by using a transform */
 dio_solve_with_transform(x,y,a,b,c,d,e,f,trfunc):=block([tr_eq,tr_eq_sol,tr,result],
   tr:trfunc(x,y,a,b,c,d,e,f),
   tr_eq:expand(subst(tr,a*x*x+b*x*y+c*y*y+d*x+e*y+f)),
@@ -375,6 +406,7 @@ dio_combine_transforms(transforms):=block([final,e],
   for e in rest(transforms) do
   final:subst(e,final),
   final);
+/* transforms an hyperbolic equation into a pell equation x^2-D*y^2=N */
 diophantine_transform_to_pell(eq):=block([transforms, final_transform, transformed_eq, vars, up_vars, new_vars, to_new_vars, new_pell],
   transforms:diophantine_compute_transforms_to_pell(eq),
   final_transform:dio_combine_transforms(transforms),
@@ -387,15 +419,7 @@ diophantine_transform_to_pell(eq):=block([transforms, final_transform, transform
   new_pell:subst(to_new_vars, dio_make_coeffs_integer(transformed_eq)),
   [ratsimp(subst(to_new_vars,final_transform)), new_pell]);
 
-dio_all_pell_solutions2(x,y,D,N):=block([p:subst(dio_min_pos_pell_solution(x,y,D,1),[x+sqrt(D)*y,x-sqrt(D)*y]),lmm:dio_lmm(x,y,D,N),l],
-  map(lambda([s],[x=(s[1]+s[2])/2,y=(s[1]-s[2])/2/sqrt(D)]),makelist([p[1]^dio_gensym()*subst(l,x+sqrt(D)*y),p[2]^dio_gensym()*subst(l,x-sqrt(D)*y)],l,lmm)));
-
-dio_pell_int_solution_arrays(x,y,D,N,k,L):=block([p:map(rhs,dio_min_pos_pell_solution(x,y,D,1)),lmm:map(lambda([s],map(rhs,s)),dio_lmm(x,y,D,N)),l],
-  makelist(?dio_integer_pell_array(p[1],p[2],l[1],l[2],D,k,L),l,lmm));
-
-diophantine_swap_vars(eq):=block([vars:listofvars(eq),tempvar:gensym()],
-  subst(tempvar=vars[2],subst(vars[2]=vars[1],subst(vars[1]=tempvar,eq))));
-
+/* sorts the solutions so that we have a fixed order for the solutions, even if we change (part of) the underlying algorithm */
 diophantine_solve(dio_eq) := nested_sort(diophantine_solve1(dio_eq));
 
 nested_sort (l) :=
