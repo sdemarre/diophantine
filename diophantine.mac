@@ -90,8 +90,13 @@ diophantine_solve_simple_hyperbolic(x, y, b, d, e, f):=block([result:[]],
       dio_integer_expressions(x = (v-e)/b, y = ((d*e-b*f)/v-d)/b, [v, divs]),
       dio_integer_expressions(x = (-v-e)/b, y = ((-d*e+b*f)/v-d)/b, [v, divs]))));
 
+diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([tr:diophantine_transform_to_pell(a*x*x+b*x*y+c*y*y+d*x+e*y+f)],
+  block([coeffs:dio_coeffs(tr[2]),vars:listofvars(tr[2]),trsols],
+    trsols:diophantine_solve_homogenous_elliptic(vars[1],vars[2],rhs(coeffs[3]),-rhs(coeffs[6])),
+    remove_if_not(integer_solution_p,dio_subst(trsols,tr[1]))));
+
 /* solves the elliptic case: b^2-4*a*c < 0 */
-diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*c)*x^2+2*(b*e-2*c*d)*x+(e^2-4*c*f),x), iroots],
+diophantine_solve_elliptic_slow(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*c)*x^2+2*(b*e-2*c*d)*x+(e^2-4*c*f),x), iroots],
   if length(roots) = 0 then return([])
   else block([roots:if length(roots)=1 then [roots[1],roots[1]] else roots],
     iroots:map(rhs,roots),
@@ -106,9 +111,28 @@ diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*
         dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]),
         dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]))))));
 
+/* special case elliptic with b and e = 0, c=-1, used when solving homogenous elliptic */
+diophantine_solve_elliptic_special(x, y, a, d, f):=block([roots:solve(a*x^2+d*x+f,x), iroots],
+  if length(roots) = 0 then return([])
+  else block([roots:if length(roots)=1 then [roots[1],roots[1]] else roots],
+    iroots:map(rhs,roots),
+    if not (isreal_p(iroots[1]) and isreal_p(iroots[2])) then return([]),
+    iroots:map(truncate,iroots),
+    if iroots[1] > iroots[2] then iroots:[iroots[2],iroots[1]],
+    block([roots:makelist(i,i,iroots[1],iroots[2]), v],
+      if iroots[1]=iroots[2] then
+      dio_integer_expressions(x = v, y = (sqrt(4*(a*v^2+d*v+f)))/(2*c), [v, roots])
+      else
+      remove_duplicates(append(
+        dio_integer_expressions(x = v, y = -(sqrt(4*(a*v^2+d*v+f)))/2, [v, roots]),
+        dio_integer_expressions(x = v, y = sqrt(4*(a*v^2+d*v+f))/2, [v, roots]))))));
+
 /* solve x^2 + dy^2 = n */
-diophantine_solve_homogenous_elliptic(x,y,d,n):=block([roots:zn_nth_root(n,2,d),results:[],root,k,sols,t],
-  sols:makelist([root,diophantine_solve(expand((n-(root+k*d)^2)/d)-t^2)], root, roots),
+diophantine_solve_homogenous_elliptic(x,y,d,n):=
+if d < 0 then (
+  diophantine_solve_homogenous_elliptic(x,y,-d,-n))
+else block([roots:zn_nth_root(n,2,d),results:[],root,k,sols,t],
+  sols:makelist([root,diophantine_solve_elliptic_special(k,t,-d,-2*root,(n-root^2)/d)], root, roots),
   for sol in sols do (
     for s in sol[2] do (
       results:cons(subst(s,[x=sol[1]+k*d,y=t]),results))),
@@ -412,10 +436,11 @@ diophantine_compute_transforms_to_pell(eq):=block([cur_eq:eq,transforms:[],trans
   if not emptyp(transform) then push(transform, transforms),
   reverse(transforms));
 dio_combine_transforms(transforms):=block([final,e],
-  final:first(transforms),
-  for e in rest(transforms) do
-  final:subst(e,final),
-  final);
+  if emptyp(transforms) then []
+  else (final:first(transforms),
+    for e in rest(transforms) do
+    final:subst(e,final),
+    final));
 /* transforms an hyperbolic equation into a pell equation x^2-D*y^2=N */
 diophantine_transform_to_pell(eq):=block([transforms, final_transform, transformed_eq, vars, up_vars, new_vars, to_new_vars, new_pell],
   transforms:diophantine_compute_transforms_to_pell(eq),
@@ -427,7 +452,7 @@ diophantine_transform_to_pell(eq):=block([transforms, final_transform, transform
   new_vars:listofvars(transformed_eq),
   to_new_vars: [new_vars[1]=up_vars[1], new_vars[2]=up_vars[2]],
   new_pell:subst(to_new_vars, dio_make_coeffs_integer(transformed_eq)),
-  [ratsimp(subst(to_new_vars,final_transform)), new_pell]);
+  [if emptyp(final_transform) then to_new_vars else ratsimp(subst(to_new_vars,final_transform)), new_pell]);
 
 /* sorts the solutions so that we have a fixed order for the solutions, even if we change (part of) the underlying algorithm */
 diophantine_solve(dio_eq) := nested_sort(diophantine_solve1(dio_eq));
