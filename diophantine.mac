@@ -106,6 +106,14 @@ diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([roots:solve((b^2-4*a*
         dio_integer_expressions(x = v, y = (-(b*v+e)+sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]),
         dio_integer_expressions(x = v, y = (-(b*v+e)-sqrt((b*v+e)^2-4*c*(a*v^2+d*v+f)))/(2*c), [v, roots]))))));
 
+/* solve x^2 + dy^2 = n */
+diophantine_solve_homogenous_elliptic(x,y,d,n):=block([roots:zn_nth_root(n,2,d),results:[],root,k,sols,t],
+  sols:makelist([root,diophantine_solve(expand((n-(root+k*d)^2)/d)-t^2)], root, roots),
+  for sol in sols do (
+    for s in sol[2] do (
+      results:cons(subst(s,[x=sol[1]+k*d,y=t]),results))),
+  results);
+
 /* solves the parabolic case: b^2-4*a*c=0 */
 diophantine_solve_parabolic(x, y, a, b, c, d, e, f):=block([g:gcd(a,c),ag,bg,cg,qa,qc,qcdqae],
   if a=0 then return(diophantine_solve_parabolic(y,x,c,b,a,e,d,f)),
