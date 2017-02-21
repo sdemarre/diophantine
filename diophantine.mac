@@ -154,6 +154,7 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
           else dio_solve_with_transform(x,y,a,0,c,0,0,f,dio_make_a_one_transform))
         elseif (a = 1 and c < 0) or (c = 1 and a < 0) then
         block([r,s,t,u,fundamental_solutions,pell_1_solutions,D: if a = 1 then -c else -a],
+          if f = 0 then return([]),
           fundamental_solutions: dio_lmm(r,s,D,-f),
           pell_1_solutions: dio_all_pell_solutions(t, u, D, 1),
           block([eq:if a = 1 then [x=r*t+s*u*D, y=r*u+s*t] else [y=r*t+s*u*D, x=r*u+s*t],result:[]],
