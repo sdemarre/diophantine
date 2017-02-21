@@ -187,3 +187,8 @@ modis(eq):=dis(eq,-1,sorted);
 sortbyz(eqs):=map(first,sort(map(lambda([eq],all_z_powers(ds(eq))),eqs),lambda([eqd1,eqd2],eqd1[2][1][1]<eqd2[2][1][1])));
 di():=display2d:imaxima;
 df():=display2d:false;
+
+/* find equation with many solutions */
+prime_list(max):=block([r:[],p:2],for i thru max do (r:cons(p,r),p:next_prime(p)),r);
+ppow(num,current,primes,maxpow):=if num = 0 then current else block([m:mod(num,maxpow),nnum:floor(num/maxpow)],ppow(nnum,current * first(primes)^m,rest(primes),maxpow));
+find_interesting_eqs(value):=block([r:[0,0]],for i from 1 thru 6^8 do block([num:ppow(i,1,prime_list(10),6)], block([sol_len:length(dio_lmm(x,y,value,num))], if sol_len > r[1] then (r:[sol_len,num],print(['sol_len=sol_len,'N=num])))),r);
