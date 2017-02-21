@@ -466,11 +466,20 @@ block([vars:listofvars(dio_eq),factored_eq:factor(dio_eq)],
         error (dio_error_integer_coeffs)
         else dio_solve_coeffs(x,y,a,b,c,d,e,f))));
 
-dio_solve_coeffs(x,y,a,b,c,d,e,f):=block([],
+dio_classify(a,b,c,d,e,f):=
+  if (a = 0 and b = 0 and c = 0) then diophantine_linear
+  elseif (a = 0 and c = 0 and b # 0) then diophantine_simple_hyperbolic
+  elseif b^2-4*a*c < 0 then diophantine_elliptic
+  elseif b^2-4*a*c = 0 then diophantine_parabolic
+  else diophantine_hyperbolic;
+
+dio_solve_coeffs(x,y,a,b,c,d,e,f):=block([equation_type],
   map(":",['a,'b,'c,'d,'e,'f],rest(ezgcd(a,b,c,d,e,f))),
-  if (a = 0 and b = 0 and c = 0) then diophantine_solve_linear(x, y, d, e, f)
-  elseif (a = 0 and c = 0 and b # 0) then diophantine_solve_simple_hyperbolic(x, y, b, d, e, f)
-  elseif b^2-4*a*c < 0 then diophantine_solve_elliptic(x, y, a, b, c, d, e, f)
-  elseif b^2-4*a*c = 0 then diophantine_solve_parabolic(x, y, a, b, c, d, e, f)
+  equation_type:dio_classify(a,b,c,d,e,f),
+  if diophantine_verbose_type = true then print(equation_type),
+  if equation_type = diophantine_linear then diophantine_solve_linear(x, y, d, e, f)
+  elseif equation_type = diophantine_simple_hyperbolic then diophantine_solve_simple_hyperbolic(x, y, b, d, e, f)
+  elseif equation_type = diophantine_elliptic then diophantine_solve_elliptic(x, y, a, b, c, d, e, f)
+  elseif equation_type = diophantine_parabolic then diophantine_solve_parabolic(x, y, a, b, c, d, e, f)
   else diophantine_solve_hyperbolic(x, y, a, b, c, d, e, f));
 
