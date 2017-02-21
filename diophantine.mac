@@ -171,8 +171,9 @@ diophantine_solve_hyperbolic_homogenous(x, y, a, b, c, f):=block([],
 dio_infinite_solutions(sol):=not freeof(dio_gensym(),sol) or not freeof(dio_gensym_pos(), sol);
 
 /* remove elements from a list, based on a predicate */
-remove_if(pred, list):=block([result:[],e],
-  for e in list do if not pred(e) then push(e,result),
+remove_if(pred, list, [key]):=block([result:[],e],
+  for e in list do block([ne:if emptyp(key) then e else key[1](e)],
+    if not pred(ne) then push(e,result)),
   reverse(result));
 
 /* remove elements from a list, based on a predicate */
