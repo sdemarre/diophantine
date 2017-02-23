@@ -132,10 +132,10 @@ diophantine_solve_homogenous_elliptic(x,y,d,n):=
 if d < 0 then (
   diophantine_solve_homogenous_elliptic(x,y,-d,-n))
 else block([roots:zn_nth_root(n,2,d),results:[],root,k,sols,t],
-  sols:makelist([root,diophantine_solve_elliptic_special(k,t,-d,-2*root,(n-root^2)/d)], root, roots),
-  for sol in sols do (
-    for s in sol[2] do (
-      results:cons(subst(s,[x=sol[1]+k*d,y=t]),results))),
+  if roots#false then (sols:makelist([root,diophantine_solve_elliptic_special(k,t,-d,-2*root,(n-root^2)/d)], root, roots),
+    for sol in sols do (
+      for s in sol[2] do (
+        results:cons(subst(s,[x=sol[1]+k*d,y=t]),results)))),
   results);
 
 /* solves the parabolic case: b^2-4*a*c=0 */
