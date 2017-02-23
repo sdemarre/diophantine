@@ -227,7 +227,7 @@ dio_subst(sols,eq):=map(lambda([s],subst(s,eq)),sols);
 
 /* computes the a,b,c,d,e,f coefficients of an equation of the form a*x^2 + b*x*y + c*y^2 + d*x + e*y + f = 0 */
 dio_coeffs(eq):=block([vars:listofvars(eq)],
-  if length(vars)=1 then vars:[vars[1],gensym()],
+  if length(vars)=1 then vars:[vars[1],'dummyvar],
   if op(eq)="=" then eq:lhs(eq)-rhs(eq),
   ['a=coeff(eq,vars[1],2),'b=coeff(coeff(eq,vars[2]),vars[1]),'c=coeff(eq,vars[2],2),'d=coeff(coeff(eq,vars[1]),vars[2],0),'e=coeff(coeff(eq,vars[2]),vars[1],0),'f=coeff(coeff(eq,vars[1],0),vars[2],0)]);
 
@@ -251,7 +251,7 @@ dio_make_d_zero_transform(x,y,a,b,c,d,e,f):=block([B,C,e1,X:'Xd,Y:'Yd],
 dio_make_e_zero_transform(x,y,a,b,c,d,e,f):=block([B,C,e1,X:'Xe,Y:'Ye],
   e1:2*c/e, B:ratnum(e1), C:denom(e1),
   [y=1/B*X-C/B,x=Y]);
-dio_make_a_one_transform(x,y,a,b,c,d,e,f):=block([X:gensym("X"),Y:gensym("Y")],
+dio_make_a_one_transform(x,y,a,b,c,d,e,f):=block([X:'Xa1,Y:'Ya1],
   [x=X/a,y=Y]);
 dio_apply_transform(eq,transform_name):=block([vars:listofvars(eq),coeffs:map(rhs,dio_coeffs(eq)),new_eq,transform],
   transform:apply(transform_name,append(vars,coeffs)),
