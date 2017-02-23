@@ -93,6 +93,7 @@ diophantine_solve_simple_hyperbolic(x, y, b, d, e, f):=block([result:[]],
 diophantine_solve_elliptic(x, y, a, b, c, d, e, f):=block([tr:diophantine_transform_to_pell(a*x*x+b*x*y+c*y*y+d*x+e*y+f)],
   block([coeffs:dio_coeffs(tr[2]),vars:listofvars(tr[2]),trsols],
     trsols:diophantine_solve_homogenous_elliptic(vars[1],vars[2],rhs(coeffs[3]),-rhs(coeffs[6])),
+    trsols:remove_duplicates(append(trsols,map(lambda([s],[lhs(s[1])=-rhs(s[1]),s[2]]), trsols))),
     remove_if_not(integer_solution_p,dio_subst(trsols,tr[1]))));
 
 /* solves the elliptic case: b^2-4*a*c < 0 */
