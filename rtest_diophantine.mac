@@ -892,6 +892,10 @@ diophantine_solve((-161*y^2)-1006*x*y+678*y-4199*x^2+2216*x+1816);
 diophantine_solve(7915095*y^2+x^2+9518626654848);
 []$
 
+/* fast elliptic solver doesn't find these, for now */
+diophantine_solve(15*y^2+x^2 - 135);
+[[x = 0,y = 3],[x = 0,y = -3]]$
+
 /* ridiculously slow while finding quadratic congruences, and even worse when checking for integer solutions
 currently takes about half an hour and 2.5Gb to compute on a i7 6700  with sbcl
 due to 240 fundamental solutions
